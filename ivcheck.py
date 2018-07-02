@@ -97,7 +97,7 @@ while args.stop_after is None or n < args.stop_after:
         if skip_count > args.max_retries and args.max_retries != 0:
             print("CalcyIVError " + str(args.max_retries) + " times in a row, skipping to next pokemon")
             n = n + 1
-            p.swipe(97.22, 70.31, 4.62, 70.31, args.sleep_short)
+            p.tap(97.22, 20.31, args.sleep_short)
             skip_count = 0
         continue
 
@@ -113,4 +113,4 @@ while args.stop_after is None or n < args.stop_after:
         p.tap(args.ok_button_x, args.ok_button_y, args.sleep_short)  # Press OK on edit line
         p.tap(args.save_button_x, args.save_button_y, args.sleep_long)  # Press OK on Pokemon go rename dialog
     n = n + 1
-    p.swipe(97.22, 70.31, 4.63, 70.31, args.sleep_short)  # Swipe to next pokemon
+    p.tap(97.22, 20.31, args.sleep_short) # Tap to next pokemon
