@@ -62,6 +62,7 @@ if args.use_intents:
 p.start_logcat()
 p.read_logcat()
 
+
 def check_calcy_logcat(p):
     while True:
         lines = p.read_logcat()
@@ -73,13 +74,13 @@ def check_calcy_logcat(p):
                     raise pokemonlib.CalcyIVError
                 else:
                     return True
-    
+
 
 while args.stop_after is None or n < args.stop_after:
     if args.use_intents:
         p.send_intent("tesmath.calcy.ACTION_ANALYZE_SCREEN", "tesmath.calcy/.IntentReceiver", args.sleep_long)
     else:
-        p.tap(7.40, 46.87, args.sleep_long) # Calcy IV
+        p.tap(7.40, 46.87, args.sleep_long)  # Calcy IV
 
 
     try:
@@ -101,15 +102,15 @@ while args.stop_after is None or n < args.stop_after:
         continue
 
     if not args.no_rename:
-        p.tap(54.91, 69.53, 0) # Dismiss Calcy IV
-        p.tap(args.name_line_x, args.name_line_y, args.sleep_short) # Rename
+        p.tap(54.91, 69.53, 0)  # Dismiss Calcy IV
+        p.tap(args.name_line_x, args.name_line_y, args.sleep_short)  # Rename
         if args.nopaste:
-            p.tap(args.edit_box_x, args.edit_box_y, args.sleep_short) # Press in the edit box
-            p.swipe(args.edit_line_x, args.edit_line_y, args.edit_line_x, args.edit_line_y, args.sleep_short, 600) # Use swipe to simulate a long press to bring up copy/paste dialog
-            p.tap(args.paste_button_x, args.paste_button_y, args.sleep_short) # Press paste
+            p.tap(args.edit_box_x, args.edit_box_y, args.sleep_short)  # Press in the edit box
+            p.swipe(args.edit_line_x, args.edit_line_y, args.edit_line_x, args.edit_line_y, args.sleep_short, 600)  # Use swipe to simulate a long press to bring up copy/paste dialog
+            p.tap(args.paste_button_x, args.paste_button_y, args.sleep_short)  # Press paste
         else:
-            p.key(279, args.sleep_short) # Paste into rename
-        p.tap(args.ok_button_x, args.ok_button_y, args.sleep_short) # Press OK on edit line
-        p.tap(args.save_button_x, args.save_button_y, args.sleep_long) # Press OK on Pokemon go rename dialog
+            p.key(279, args.sleep_short)  # Paste into rename
+        p.tap(args.ok_button_x, args.ok_button_y, args.sleep_short)  # Press OK on edit line
+        p.tap(args.save_button_x, args.save_button_y, args.sleep_long)  # Press OK on Pokemon go rename dialog
     n = n + 1
-    p.swipe(97.22, 70.31, 4.63, 70.31, args.sleep_short) # Swipe to next pokemon
+    p.swipe(97.22, 70.31, 4.63, 70.31, args.sleep_short)  # Swipe to next pokemon
