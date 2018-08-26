@@ -108,9 +108,12 @@ while args.stop_after is None or n < args.stop_after:
             p.tap(args.edit_box_x, args.edit_box_y, args.sleep_short)  # Press in the edit box
             p.swipe(args.edit_line_x, args.edit_line_y, args.edit_line_x, args.edit_line_y, args.sleep_short, 600)  # Use swipe to simulate a long press to bring up copy/paste dialog
             p.tap(args.paste_button_x, args.paste_button_y, args.sleep_short)  # Press paste
+            p.tap(args.ok_button_x, args.ok_button_y, args.sleep_short)  # Press OK on edit line
         else:
-            p.key(279, args.sleep_short)  # Paste into rename
-        p.tap(args.ok_button_x, args.ok_button_y, args.sleep_short)  # Press OK on edit line
+            p.key('KEYCODE_PASTE', args.sleep_short)  # Paste into rename
+            p.key('KEYCODE_TAB', args.sleep_short)  # Press tab
+            p.key('KEYCODE_ENTER', args.sleep_short)  # Press enter
         p.tap(args.save_button_x, args.save_button_y, args.sleep_long)  # Press OK on Pokemon go rename dialog
     n = n + 1
     p.tap(97.22, 20.31, args.sleep_short) # Tap to next pokemon
+
