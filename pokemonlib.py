@@ -70,9 +70,11 @@ class PokemonGo(object):
             i = i + 1
             color = rgb_image.getpixel((0, image.size[1] - i))
         # If we have the same color covering 5-10% of the total height, it's probably a nav bar
-        if i > image.size[1] / 20 and i < image.size[1] / 10:
+        if i > image.size[1] / 25 and i < image.size[1] / 10:
+            logger.info("Detected Navbar")
             size = (image.size[0], image.size[1] - i)
         else:
+            logger.info("No Navbar detected")
             size = image.size
         logger.info("Determined device resolution as %s", size)
         return size
