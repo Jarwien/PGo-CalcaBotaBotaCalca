@@ -115,5 +115,5 @@ while args.stop_after is None or n < args.stop_after:
             p.key('KEYCODE_ENTER', args.sleep_short)  # Press enter
         p.tap(args.save_button_x, args.save_button_y, args.sleep_long)  # Press OK on Pokemon go rename dialog
     n = n + 1
-    p.tap(97.22, 20.31, args.sleep_short) # Tap to next pokemon
+    p.tap(97.22, 20.31, args.sleep_short)  # Tap to next pokemon
 
