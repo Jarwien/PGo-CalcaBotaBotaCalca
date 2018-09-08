@@ -19,11 +19,11 @@ parser.add_argument('--max_retries', type=int, default=5,
                     help="Maximum retries, set to 0 for unlimited.")
 parser.add_argument('--stop_after', type=int, default=None,
                     help="Stop after this many pokemon.")
-parser.add_argument('--sleep_short', type=float, default=0.9,
+parser.add_argument('--sleep_short', type=float, default=1.2,
                     help="Sleep duration for shorter pauses.")
-parser.add_argument('--sleep_long', type=float, default=1.5,
+parser.add_argument('--sleep_long', type=float, default=2,
                     help="Sleep duration for longer pauses.")
-parser.add_argument('--sleep_super_long', type=float, default=2.5,
+parser.add_argument('--sleep_super_long', type=float, default=3,
                     help="Sleep duration for very long pauses.")
 parser.add_argument('--name_line_x', type=float, default=50.74,
                     help="X coordinate (in %) of name edit button position.")
@@ -75,6 +75,8 @@ def check_calcy_logcat(p):
             print(line)
             if line.endswith(b"has red error box at the top of the screen"):
                 raise pokemonlib.RedBarError
+            if b"Did not find better arc-point" in line:
+                raise pokemonlib.CalcyIVError
             if b"MainService: Received values: Id: " in line:
                 if b"-1" in line:
                     raise pokemonlib.CalcyIVError
@@ -111,7 +113,7 @@ while args.stop_after is None or n < args.stop_after:
         continue
 
     if not args.no_rename:
-        p.tap(54.91, 69.53, 0)  # Dismiss Calcy IV
+        p.tap(54.91, 69.53, args.sleep_short)  # Dismiss Calcy IV
         p.tap(args.name_line_x, args.name_line_y, args.sleep_short)  # Rename
         if args.nopaste:
             p.tap(args.edit_box_x, args.edit_box_y, args.sleep_short)  # Press in the edit box
