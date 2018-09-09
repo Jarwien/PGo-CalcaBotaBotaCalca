@@ -21,7 +21,7 @@ parser.add_argument('--stop_after', type=int, default=None,
                     help="Stop after this many pokemon.")
 parser.add_argument('--sleep_short', type=float, default=1.2,
                     help="Sleep duration for shorter pauses.")
-parser.add_argument('--sleep_long', type=float, default=2,
+parser.add_argument('--sleep_long', type=float, default=1.8,
                     help="Sleep duration for longer pauses.")
 parser.add_argument('--sleep_super_long', type=float, default=3,
                     help="Sleep duration for very long pauses.")
@@ -69,8 +69,8 @@ def check_calcy_logcat(p):
     for x in range(1, 15):
         lines = p.read_logcat()
         if not lines:
-            p.start_logcat()
-            continue
+            print('Not Line!')
+            raise pokemonlib.CalcyIVError
         for line in lines:
             print(line)
             if line.endswith(b"has red error box at the top of the screen"):
@@ -78,13 +78,11 @@ def check_calcy_logcat(p):
             if b"Did not find better arc-point" in line:
                 raise pokemonlib.CalcyIVError
             if b"MainService: Received values: Id: " in line:
-                if b"-1" in line:
+                if b" -1" in line:
+                    print("-1 in line!")
                     raise pokemonlib.CalcyIVError
                 else:
                     return True
-
-    print('No logcat available. Assuming OK.')
-    return True
 
 
 while args.stop_after is None or n < args.stop_after:
