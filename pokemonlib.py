@@ -60,13 +60,13 @@ class PokemonGo(object):
         # Try and detect software nav bar
         rgb_image = image.convert('RGB')
         i = 1
-        bar_color = rgb_image.getpixel((0, image.size[1]-i))
+        bar_color = rgb_image.getpixel((0, image.size[1] - i))
         color = bar_color
         while color == bar_color and i < image.size[0]:
             i = i + 1
-            color = rgb_image.getpixel((0, image.size[1]-i))
+            color = rgb_image.getpixel((0, image.size[1] - i))
         # If we have the same color covering 5-10% of the total height, it's probably a nav bar
-        if i > image.size[1] / 20 and i < image.size[1] / 10:
+        if i > image.size[1] / 30 and i < image.size[1] / 10:
             size = (image.size[0], image.size[1] - i)
         else:
             size = image.size
@@ -137,7 +137,7 @@ class PokemonGo(object):
                     if search_colors == []:
                         return True
         return False
-        
+
     def check_calcy_iv(self):
         image = self.screencap()
         rgb_image = image.convert('RGB')
@@ -170,4 +170,4 @@ class PokemonGo(object):
         return_code, stdout, stderr = self.run(["adb", "-s", self.device_id, "shell", "pidof", "-s", "tesmath.calcy"])
         pid = stdout.decode('utf-8').strip()
         self.logcat_task = subprocess.Popen(["adb", "-s", self.device_id, "logcat", "--pid={}".format(pid)], stdout=subprocess.PIPE)
-        
+
