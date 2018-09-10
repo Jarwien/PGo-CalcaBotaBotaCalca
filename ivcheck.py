@@ -23,8 +23,6 @@ parser.add_argument('--sleep_short', type=float, default=1.2,
                     help="Sleep duration for shorter pauses.")
 parser.add_argument('--sleep_long', type=float, default=1.8,
                     help="Sleep duration for longer pauses.")
-parser.add_argument('--sleep_super_long', type=float, default=3,
-                    help="Sleep duration for very long pauses.")
 parser.add_argument('--name_line_x', type=float, default=50.74,
                     help="X coordinate (in %) of name edit button position.")
 parser.add_argument('--name_line_y', type=float, default=47.97,
@@ -87,9 +85,9 @@ def check_calcy_logcat(p):
 
 while args.stop_after is None or n < args.stop_after:
     if args.use_intents:
-        p.send_intent("tesmath.calcy.ACTION_ANALYZE_SCREEN", "tesmath.calcy/.IntentReceiver", args.sleep_super_long)
+        p.send_intent("tesmath.calcy.ACTION_ANALYZE_SCREEN", "tesmath.calcy/.IntentReceiver", args.sleep_long)
     else:
-        p.tap(7.40, 46.87, args.sleep_super_long)  # Calcy IV
+        p.tap(7.40, 46.87, args.sleep_long)  # Calcy IV
 
 
     try:
