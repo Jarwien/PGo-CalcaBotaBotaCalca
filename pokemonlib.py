@@ -6,6 +6,34 @@ import select
 from PIL import Image
 from io import BytesIO
 
+# import Queue
+# import threading
+
+
+# class AsynchronousFileReader(threading.Thread):
+#     '''
+#     Helper class to implement asynchronous reading of a file
+#     in a separate thread. Pushes read lines on a queue to
+#     be consumed in another thread.
+#     '''
+
+#     def __init__(self, fd, queue):
+#         assert isinstance(queue, Queue.Queue)
+#         assert callable(fd.readline)
+#         threading.Thread.__init__(self)
+#         self._fd = fd
+#         self._queue = queue
+
+#     def run(self):
+#         '''The body of the tread: read lines and put them on the queue.'''
+#         for line in iter(self._fd.readline, ''):
+#             self._queue.put(line)
+
+#     def eof(self):
+#         '''Check whether there is no more content to expect.'''
+#         return not self.is_alive() and self._queue.empty()
+
+
 logger = logging.getLogger('PokemonGo')
 logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
@@ -166,10 +194,19 @@ class PokemonGo(object):
         time.sleep(sleep)
 
     def read_logcat(self):
+        # stdout_reader = AsynchronousFileReader(self.logcat_task.stdout, stdout_queue)
+
+
         lines = []
+        i = 0
         self.logcat_task.stdout.flush()
-        while select.select([self.logcat_task.stdout], [], [], 0.1)[0] != []:
-            lines.append(self.logcat_task.stdout.readline())
+        while select.select([self.logcat_task.stdout], [], [], 3)[0] != []:
+            i = i + 1
+            line = self.logcat_task.stdout.readline()
+            if line != '':
+                lines.append(line)
+            if i >= 1000:
+                break
         return lines
 
     def start_logcat(self):
@@ -177,3 +214,5 @@ class PokemonGo(object):
         pid = stdout.decode('utf-8').strip()
         self.logcat_task = subprocess.Popen(["adb", "-s", self.device_id, "logcat", "--pid={}".format(pid)], stdout=subprocess.PIPE)
 
+        # stdout_queue = Queue.Queue()
+        # stdout_reader.start()
