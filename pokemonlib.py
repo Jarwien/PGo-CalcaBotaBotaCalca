@@ -80,7 +80,7 @@ class PokemonGo(object):
         logger.debug("Running %s", args)
         p = subprocess.Popen([str(arg) for arg in args], stdout=subprocess.PIPE)
         stdout, stderr = p.communicate()
-        logger.debug("Return code %d", p.returncode)
+        # logger.debug("Return code %d", p.returncode)
         return (p.returncode, stdout, stderr)
 
     def screencap(self):
@@ -131,10 +131,12 @@ class PokemonGo(object):
 
     def tap(self, x, y, sleep):
         self.run(["adb", "-s", self.device_id, "shell", "input", "tap", self.get_x(x), self.get_y(y)])
+        logger.info("Tapping on " + str(self.get_x(x)) + "x" + str(self.get_y(y)) + " and waiting " + str(sleep) + "seconds...")
         time.sleep(sleep)
 
     def key(self, key, sleep):
         self.run(["adb", "-s", self.device_id, "shell", "input", "keyevent", key])
+        logger.info("Pressing key " + key + " and waiting " + str(sleep) + "seconds...")
         time.sleep(sleep)
 
     def swipe(self, x1, y1, x2, y2, sleep, duration=None):

@@ -19,10 +19,12 @@ parser.add_argument('--max_retries', type=int, default=5,
                     help="Maximum retries, set to 0 for unlimited.")
 parser.add_argument('--stop_after', type=int, default=None,
                     help="Stop after this many pokemon.")
-parser.add_argument('--sleep_short', type=float, default=0.3,
+parser.add_argument('--sleep_short', type=float, default=0.1,
                     help="Sleep duration for shorter pauses.")
-parser.add_argument('--sleep_long', type=float, default=1.2,
+parser.add_argument('--sleep_long', type=float, default=1,
                     help="Sleep duration for longer pauses.")
+parser.add_argument('--sleep_super_long', type=float, default=1.8,
+                    help="Sleep duration for super long pauses.")
 parser.add_argument('--name_line_x', type=float, default=50.74,
                     help="X coordinate (in %) of name edit button position.")
 parser.add_argument('--name_line_y', type=float, default=47.97,
@@ -84,9 +86,9 @@ def check_calcy_logcat(p):
 
 while args.stop_after is None or n < args.stop_after:
     if args.use_intents:
-        p.send_intent("tesmath.calcy.ACTION_ANALYZE_SCREEN", "tesmath.calcy/.IntentReceiver", args.sleep_long)
+        p.send_intent("tesmath.calcy.ACTION_ANALYZE_SCREEN", "tesmath.calcy/.IntentReceiver", args.sleep_super_long)
     else:
-        p.tap(7.40, 46.87, args.sleep_long)  # Calcy IV
+        p.tap(7.40, 46.87, args.sleep_super_long)  # Calcy IV
 
 
     try:
@@ -102,7 +104,7 @@ while args.stop_after is None or n < args.stop_after:
         if skip_count > args.max_retries and args.max_retries != 0:
             print("CalcyIVError " + str(args.max_retries) + " times in a row, skipping to next pokemon")
             n = n + 1
-            p.tap(97.22, 20.31, args.sleep_short)
+            p.tap(97.22, 20.31, args.sleep_super_long)
             skip_count = 0
         continue
 
@@ -118,7 +120,9 @@ while args.stop_after is None or n < args.stop_after:
             p.key('KEYCODE_PASTE', args.sleep_short)  # Paste into rename
             p.key('KEYCODE_TAB', args.sleep_short)  # Press tab
             p.key('KEYCODE_ENTER', args.sleep_short)  # Press enter
-        p.tap(args.save_button_x, args.save_button_y, args.sleep_long)  # Press OK on Pokemon go rename dialog
+        # Sometimes one click only doesn't work, so we'll click twice really fast:
+        # p.tap(args.save_button_x, args.save_button_y, 0)       # Press OK on Pokemon go rename dialog
+        p.tap(args.save_button_x, args.save_button_y, args.sleep_super_long)  # Press OK on Pokemon go rename dialog
     n = n + 1
-    p.tap(97.22, 20.31, args.sleep_short)  # Tap to next pokemon
+    p.tap(97.22, 20.31, args.sleep_super_long)  # Tap to next pokemon
 
