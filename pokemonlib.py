@@ -55,6 +55,10 @@ class PhoneNotConnectedError(Exception):
     pass
 
 
+class CalcyIVNotRunning(Exception):
+    pass
+
+
 class PokemonGo(object):
     def __init__(self, device_id):
         devices = self.get_devices()
@@ -66,6 +70,11 @@ class PokemonGo(object):
             self.device_id = device_id
         self.use_fallback_screenshots = False
         self.resolution = None
+        try:
+            return_code, stdout, stderr = self.run(["adb", "-s", self.device_id, "shell", "pidof", "-s", "tesmath.calcy"])
+            self.pid = stdout.decode('utf-8').strip()
+        except Exception as e:
+            raise CalcyIVNotRunning
 
     def run(self, args):
         logger.debug("Running %s", args)
@@ -98,7 +107,7 @@ class PokemonGo(object):
             i = i + 1
             color = rgb_image.getpixel((0, image.size[1] - i))
         # If we have the same color covering 5-10% of the total height, it's probably a nav bar
-        if i > image.size[1] / 25 and i < image.size[1] / 10:
+        if i > image.size[1] / 30 and i < image.size[1] / 10:
             logger.info("Detected Navbar")
             size = (image.size[0], image.size[1] - i)
         else:
@@ -191,7 +200,20 @@ class PokemonGo(object):
 
     def send_intent(self, intent, package, sleep):
         return_code, stdout, stderr = self.run(["adb", "-s", self.device_id, "shell", "am broadcast -a {} -n {}".format(intent, package)])
+        logger.info("Sending intent: " + intent + " to " + package + "...")
         time.sleep(sleep)
+
+    def get_last_logcat(self):
+        ''' Grabs only the return line of CalcyIV, instead of
+            watching the whole logcat, which causes problems with buffers sync.
+
+            The same as running:
+                $(adb logcat --pid=[PID] -d | grep MainService | tail -n1)
+
+        TODO: maybe implement all log checks in here, as some are not apparent on the MainService output
+        '''
+        output = self.run(['sh', '-c', 'adb logcat --pid=' + self.pid + ' -d | grep MainService | tail -n1'])
+        return output[1]
 
     def read_logcat(self):
         # stdout_reader = AsynchronousFileReader(self.logcat_task.stdout, stdout_queue)
@@ -200,7 +222,16 @@ class PokemonGo(object):
         lines = []
         i = 0
         self.logcat_task.stdout.flush()
-        while select.select([self.logcat_task.stdout], [], [], 3)[0] != []:
+        while select.select([self.logcat_task.stdout], [], [], 0.2)[0] != []:
+            i = i + 1
+            line = self.logcat_task.stdout.readline()
+            if line != '':
+                lines.append(line)
+            if i >= 1000:
+                break
+        i = 0
+        self.logcat_task.stdout.flush()
+        while select.select([self.logcat_task.stdout], [], [], 0.2)[0] != []:
             i = i + 1
             line = self.logcat_task.stdout.readline()
             if line != '':

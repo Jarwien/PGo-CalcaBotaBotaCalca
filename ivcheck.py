@@ -19,9 +19,9 @@ parser.add_argument('--max_retries', type=int, default=5,
                     help="Maximum retries, set to 0 for unlimited.")
 parser.add_argument('--stop_after', type=int, default=None,
                     help="Stop after this many pokemon.")
-parser.add_argument('--sleep_short', type=float, default=1.2,
+parser.add_argument('--sleep_short', type=float, default=0.3,
                     help="Sleep duration for shorter pauses.")
-parser.add_argument('--sleep_long', type=float, default=1.8,
+parser.add_argument('--sleep_long', type=float, default=1.2,
                     help="Sleep duration for longer pauses.")
 parser.add_argument('--name_line_x', type=float, default=50.74,
                     help="X coordinate (in %) of name edit button position.")
@@ -59,28 +59,27 @@ p = pokemonlib.PokemonGo(args.device_id)
 n = 0
 # if args.use_intents:
 #     p.send_intent("tesmath.calcy.ACTION_HIDE_BUTTON", "tesmath.calcy/.IntentReceiver", 0)
-p.start_logcat()
-p.read_logcat()
+# p.start_logcat()
+# p.read_logcat()
 
 
 def check_calcy_logcat(p):
-    for x in range(1, 15):
-        lines = p.read_logcat()
-        if not lines:
-            print('Not Line!')
+    calcyOutput = p.get_last_logcat()
+    if not calcyOutput:
+        print('Found nothing!')
+        raise pokemonlib.CalcyIVError
+    if b"MainService: Received values: Id: " in calcyOutput:
+        if b" -1" in calcyOutput:
+            print("CalcyIV's got an error! Check the message below:")
+            print(calcyOutput)
             raise pokemonlib.CalcyIVError
-        for line in lines:
-            print(line)
-            if line.endswith(b"has red error box at the top of the screen"):
-                raise pokemonlib.RedBarError
-            if b"Did not find better arc-point" in line:
-                raise pokemonlib.CalcyIVError
-            if b"MainService: Received values: Id: " in line:
-                if b" -1" in line:
-                    print("-1 in line!")
-                    raise pokemonlib.CalcyIVError
-                else:
-                    return True
+        else:
+            print(calcyOutput)
+            return True
+    else:
+        print("Something is wrong, check message below: ")
+        print(calcyOutput)
+        raise pokemonlib.CalcyIVError
 
 
 while args.stop_after is None or n < args.stop_after:
@@ -97,7 +96,6 @@ while args.stop_after is None or n < args.stop_after:
         print("RedBarError, continuing")
         continue
     except pokemonlib.CalcyIVError:
-        print("CalcyIVError")
         if args.wait_after_error:
             input("CalcyIVError, Press enter to continue")
         skip_count = skip_count + 1
