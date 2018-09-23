@@ -35,9 +35,9 @@ from io import BytesIO
 
 
 logger = logging.getLogger('PokemonGo')
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
+ch.setLevel(logging.INFO)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 ch.setFormatter(formatter)
 logger.addHandler(ch)
@@ -210,13 +210,16 @@ class PokemonGo(object):
             instead of watching the logcat, which causes problems with buffers sync.
 
             The same as running:
-                adb logcat --pid=$(adb shell pidof -s tesmath.calcy) -d | tac | \grep "Received values" -B1000 -m1
+                adb logcat --pid=$(adb shell pidof -s tesmath.calcy) -d | tac | grep "Received values" -B1000 -m1
 
 
         '''
-
-        output = self.run(['sh', '-c', 'adb logcat --pid=' + self.pid + '| tac | \grep "Received values" -B1000 -m1'])
-        return output
+        # code, stdout, stderr = self.run(["adb", "logcat", "--pid={}".format(self.pid),])
+        # output = self.run(['sh', '-c', 'adb logcat --pid=' + self.pid + ' | tac | grep "Received values" -B1000 -m1'])
+        processOutput = subprocess.run(['sh', '-c', 'adb logcat --pid=' + self.pid + ' -d | tac | grep "Received values" -B1000 -m1'], stdout=subprocess.PIPE)
+        outputSanitizedList = processOutput.stdout.decode('utf-8').strip().splitlines()
+        # print(outputSanitizedList)
+        return outputSanitizedList
 
     def read_logcat(self):
         # stdout_reader = AsynchronousFileReader(self.logcat_task.stdout, stdout_queue)

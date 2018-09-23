@@ -62,23 +62,32 @@ n = 0
 
 
 def check_calcy_logcat(p):
-    calcyOutput = p.get_last_logcat()
+    calcyLogcat = p.get_last_logcat()
 
-    for line in calcyOutput:
-        if not line:
-            print('Found nothing!')
+    if not calcyLogcat:
+        print('Something weird went on! I can\'t get the logcat output from CalcyIV!')
+        print('Are you sure you\'re running CalcyIV?')
+        raise pokemonlib.CalcyIVNotRunning
+
+    for line in calcyLogcat:
+        # print("line: " + line)
+        # if line.endswith("has red error box at the top of the screen"):
+        #     raise pokemonlib.RedBarError
+        if "Scan invalid" in line:
+            print("Invalid Scan!")
             raise pokemonlib.CalcyIVError
-        if b"MainService: Received values: Id: " in line:
-            if b" -1" in line:
-                print("CalcyIV's got an error! Check the message below:")
-                print(line)
+        elif "Received values: Id: " in line:
+            if "-1" in line:
+                print("CalcyIV's got an error!")
                 raise pokemonlib.CalcyIVError
             else:
-                print(line)
+                print("Everything seems ok! Renaming pokémon...")
                 return True
         else:
-            print("Something went wrong, check message below: ")
+            print("###############################################################################")
+            print("Cool! We have a new error message. Check it below and send it to the developer:")
             print(line)
+            print("###############################################################################")
             raise pokemonlib.CalcyIVError
 
 
