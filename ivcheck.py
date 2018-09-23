@@ -19,11 +19,11 @@ parser.add_argument('--max_retries', type=int, default=5,
                     help="Maximum retries, set to 0 for unlimited.")
 parser.add_argument('--stop_after', type=int, default=None,
                     help="Stop after this many pokemon.")
-parser.add_argument('--sleep_short', type=float, default=0.1,
+parser.add_argument('--sleep_short', type=float, default=0.2,
                     help="Sleep duration for shorter pauses.")
-parser.add_argument('--sleep_long', type=float, default=1.1,
+parser.add_argument('--sleep_long', type=float, default=1.3,
                     help="Sleep duration for longer pauses.")
-parser.add_argument('--sleep_super_long', type=float, default=1.8,
+parser.add_argument('--sleep_super_long', type=float, default=2.1,
                     help="Sleep duration for super long pauses.")
 parser.add_argument('--name_line_x', type=float, default=50.74,
                     help="X coordinate (in %) of name edit button position.")
