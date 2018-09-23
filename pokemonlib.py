@@ -131,12 +131,12 @@ class PokemonGo(object):
 
     def tap(self, x, y, sleep):
         self.run(["adb", "-s", self.device_id, "shell", "input", "tap", self.get_x(x), self.get_y(y)])
-        logger.info("Tapping on " + str(self.get_x(x)) + "x" + str(self.get_y(y)) + " and waiting " + str(sleep) + "seconds...")
+        logger.debug("Tapping on " + str(self.get_x(x)) + "x" + str(self.get_y(y)) + " and waiting " + str(sleep) + "seconds...")
         time.sleep(sleep)
 
     def key(self, key, sleep):
         self.run(["adb", "-s", self.device_id, "shell", "input", "keyevent", key])
-        logger.info("Pressing key " + key + " and waiting " + str(sleep) + "seconds...")
+        logger.debug("Pressing key " + key + " and waiting " + str(sleep) + "seconds...")
         time.sleep(sleep)
 
     def swipe(self, x1, y1, x2, y2, sleep, duration=None):
@@ -202,7 +202,7 @@ class PokemonGo(object):
 
     def send_intent(self, intent, package, sleep):
         return_code, stdout, stderr = self.run(["adb", "-s", self.device_id, "shell", "am broadcast -a {} -n {}".format(intent, package)])
-        logger.info("Sending intent: " + intent + " to " + package + "...")
+        logger.debug("Sending intent: " + intent + " to " + package + "...")
         time.sleep(sleep)
 
     def get_last_logcat(self):
@@ -218,36 +218,3 @@ class PokemonGo(object):
         processOutput = subprocess.run(['sh', '-c', 'adb logcat --pid=' + self.pid + ' -d | tac | grep "Received values" -B1000 -m1'], stdout=subprocess.PIPE)
         outputSanitizedList = processOutput.stdout.decode('utf-8').strip().splitlines()
         return outputSanitizedList
-
-    def read_logcat(self):
-        # stdout_reader = AsynchronousFileReader(self.logcat_task.stdout, stdout_queue)
-
-
-        lines = []
-        i = 0
-        self.logcat_task.stdout.flush()
-        while select.select([self.logcat_task.stdout], [], [], 0.2)[0] != []:
-            i = i + 1
-            line = self.logcat_task.stdout.readline()
-            if line != '':
-                lines.append(line)
-            if i >= 1000:
-                break
-        i = 0
-        self.logcat_task.stdout.flush()
-        while select.select([self.logcat_task.stdout], [], [], 0.2)[0] != []:
-            i = i + 1
-            line = self.logcat_task.stdout.readline()
-            if line != '':
-                lines.append(line)
-            if i >= 1000:
-                break
-        return lines
-
-    def start_logcat(self):
-        return_code, stdout, stderr = self.run(["adb", "-s", self.device_id, "shell", "pidof", "-s", "tesmath.calcy"])
-        pid = stdout.decode('utf-8').strip()
-        self.logcat_task = subprocess.Popen(["adb", "-s", self.device_id, "logcat", "--pid={}".format(pid)], stdout=subprocess.PIPE)
-
-        # stdout_queue = Queue.Queue()
-        # stdout_reader.start()

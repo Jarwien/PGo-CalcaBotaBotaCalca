@@ -95,10 +95,8 @@ def check_calcy_logcat(p):
 
 while args.stop_after is None or n < args.stop_after:
     if args.use_intents:
+        print("Sending check signal to CalcyIV...")
         p.send_intent("tesmath.calcy.ACTION_ANALYZE_SCREEN", "tesmath.calcy/.IntentReceiver", args.sleep_long)
-    else:
-        p.tap(7.40, 46.87, args.sleep_super_long)  # Calcy IV
-
 
     try:
         check_calcy_logcat(p)
@@ -131,9 +129,9 @@ while args.stop_after is None or n < args.stop_after:
             p.key('KEYCODE_PASTE', args.sleep_short)  # Paste into rename
             p.key('KEYCODE_TAB', args.sleep_short)  # Press tab
             p.key('KEYCODE_ENTER', args.sleep_short)  # Press enter
-        # Sometimes one click only doesn't work, so we'll click twice really fast:
-        # p.tap(args.save_button_x, args.save_button_y, 0)       # Press OK on Pokemon go rename dialog
+
         p.tap(args.save_button_x, args.save_button_y, args.sleep_long)  # Press OK on Pokemon go rename dialog
+
     n = n + 1
     p.tap(97.22, 20.31, args.sleep_super_long)  # Tap to next pokemon
 
