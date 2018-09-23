@@ -21,7 +21,7 @@ parser.add_argument('--stop_after', type=int, default=None,
                     help="Stop after this many pokemon.")
 parser.add_argument('--sleep_short', type=float, default=0.1,
                     help="Sleep duration for shorter pauses.")
-parser.add_argument('--sleep_long', type=float, default=1,
+parser.add_argument('--sleep_long', type=float, default=1.1,
                     help="Sleep duration for longer pauses.")
 parser.add_argument('--sleep_super_long', type=float, default=1.8,
                     help="Sleep duration for super long pauses.")
@@ -81,19 +81,21 @@ def check_calcy_logcat(p):
                 print("CalcyIV's got an error!")
                 raise pokemonlib.CalcyIVError
             else:
+                print(line)
                 print("Everything seems ok! Renaming pokémon...")
                 return True
-        else:
-            print("###############################################################################")
-            print("Cool! We have a new error message. Check it below and send it to the developer:")
-            print(line)
-            print("###############################################################################")
-            raise pokemonlib.CalcyIVError
+
+    print("###############################################################################")
+    print("Cool! We have a new error message. Check it below and send it to the developer:")
+    for line in calcyLogcat:
+        print('Log: ' + calcyLogcat)
+    print("###############################################################################")
+    raise pokemonlib.CalcyIVError
 
 
 while args.stop_after is None or n < args.stop_after:
     if args.use_intents:
-        p.send_intent("tesmath.calcy.ACTION_ANALYZE_SCREEN", "tesmath.calcy/.IntentReceiver", args.sleep_super_long)
+        p.send_intent("tesmath.calcy.ACTION_ANALYZE_SCREEN", "tesmath.calcy/.IntentReceiver", args.sleep_long)
     else:
         p.tap(7.40, 46.87, args.sleep_super_long)  # Calcy IV
 
@@ -131,7 +133,7 @@ while args.stop_after is None or n < args.stop_after:
             p.key('KEYCODE_ENTER', args.sleep_short)  # Press enter
         # Sometimes one click only doesn't work, so we'll click twice really fast:
         # p.tap(args.save_button_x, args.save_button_y, 0)       # Press OK on Pokemon go rename dialog
-        p.tap(args.save_button_x, args.save_button_y, args.sleep_super_long)  # Press OK on Pokemon go rename dialog
+        p.tap(args.save_button_x, args.save_button_y, args.sleep_long)  # Press OK on Pokemon go rename dialog
     n = n + 1
     p.tap(97.22, 20.31, args.sleep_super_long)  # Tap to next pokemon
 
