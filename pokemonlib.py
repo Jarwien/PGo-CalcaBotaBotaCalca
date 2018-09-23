@@ -206,16 +206,17 @@ class PokemonGo(object):
         time.sleep(sleep)
 
     def get_last_logcat(self):
-        ''' Grabs only the return line of CalcyIV, instead of
-            watching the whole logcat, which causes problems with buffers sync.
+        ''' Grabs only the last return line of CalcyIV, and everything after it,
+            instead of watching the logcat, which causes problems with buffers sync.
 
             The same as running:
-                $(adb logcat --pid=[PID] -d | grep MainService | tail -n1)
+                adb logcat --pid=$(adb shell pidof -s tesmath.calcy) -d | tac | \grep "Received values" -B1000 -m1
 
-        TODO: maybe implement all log checks in here, as some are not apparent on the MainService output
+
         '''
-        output = self.run(['sh', '-c', 'adb logcat --pid=' + self.pid + ' -d | grep MainService | tail -n1'])
-        return output[1]
+
+        output = self.run(['sh', '-c', 'adb logcat --pid=' + self.pid + '| tac | \grep "Received values" -B1000 -m1'])
+        return output
 
     def read_logcat(self):
         # stdout_reader = AsynchronousFileReader(self.logcat_task.stdout, stdout_queue)

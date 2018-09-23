@@ -59,29 +59,27 @@ args = parser.parse_args()
 
 p = pokemonlib.PokemonGo(args.device_id)
 n = 0
-# if args.use_intents:
-#     p.send_intent("tesmath.calcy.ACTION_HIDE_BUTTON", "tesmath.calcy/.IntentReceiver", 0)
-# p.start_logcat()
-# p.read_logcat()
 
 
 def check_calcy_logcat(p):
     calcyOutput = p.get_last_logcat()
-    if not calcyOutput:
-        print('Found nothing!')
-        raise pokemonlib.CalcyIVError
-    if b"MainService: Received values: Id: " in calcyOutput:
-        if b" -1" in calcyOutput:
-            print("CalcyIV's got an error! Check the message below:")
-            print(calcyOutput)
+
+    for line in calcyOutput:
+        if not line:
+            print('Found nothing!')
             raise pokemonlib.CalcyIVError
+        if b"MainService: Received values: Id: " in line:
+            if b" -1" in line:
+                print("CalcyIV's got an error! Check the message below:")
+                print(line)
+                raise pokemonlib.CalcyIVError
+            else:
+                print(line)
+                return True
         else:
-            print(calcyOutput)
-            return True
-    else:
-        print("Something is wrong, check message below: ")
-        print(calcyOutput)
-        raise pokemonlib.CalcyIVError
+            print("Something went wrong, check message below: ")
+            print(line)
+            raise pokemonlib.CalcyIVError
 
 
 while args.stop_after is None or n < args.stop_after:
@@ -106,6 +104,8 @@ while args.stop_after is None or n < args.stop_after:
             n = n + 1
             p.tap(97.22, 20.31, args.sleep_super_long)
             skip_count = 0
+            continue
+        print("Attempt nº " + str(skip_count) + "Trying again...")
         continue
 
     if not args.no_rename:
