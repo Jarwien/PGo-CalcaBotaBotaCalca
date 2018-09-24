@@ -173,7 +173,12 @@ class PokemonGo(object):
         return devices
 
     def send_intent(self, intent, package, sleep):
-        return_code, stdout, stderr = self.run(["adb", "-s", self.device_id, "shell", "am broadcast -a {} -n {}".format(intent, package)])
+        # intent without box:
+        # adb shell 'am broadcast -a tesmath.calcy.ACTION_ANALYZE_SCREEN --ez silentMode true -n tesmath.calcy/.IntentReceiver'
+
+        # with output box:
+        # return_code, stdout, stderr = self.run(["adb", "-s", self.device_id, "shell", "am broadcast -a {} -n {}".format(intent, package)])
+        return_code, stdout, stderr = self.run(["adb", "-s", self.device_id, "shell", "am broadcast -a {} --ez silentMode true -n {}".format(intent, package)])
         logger.debug("Sending intent: " + intent + " to " + package + "...")
         time.sleep(sleep)
 

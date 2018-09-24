@@ -43,7 +43,6 @@
 
 import pokemonlib
 import argparse
-#import subprocess
 import subprocess
 
 skip_count = 0
@@ -141,7 +140,7 @@ def check_calcy_logcat(p):
     print("###############################################################################")
     print("Cool! We have a new error message. Check it below and send it to the developer:")
     for line in calcyLogcat:
-        print('Log: ' + calcyLogcat)
+        print('Log: ' + str(calcyLogcat))
     print("###############################################################################")
     raise pokemonlib.CalcyIVError
 
@@ -171,7 +170,7 @@ while args.stop_after is None or n < args.stop_after:
         continue
 
     if not args.no_rename:
-        p.tap(54.91, 69.53, args.sleep_short)  # Dismiss Calcy IV
+        # p.tap(54.91, 69.53, args.sleep_short)  # Dismiss Calcy IV
         p.tap(args.name_line_x, args.name_line_y, args.sleep_short)  # Rename
         if args.nopaste:
             p.tap(args.edit_box_x, args.edit_box_y, args.sleep_short)  # Press in the edit box
@@ -179,9 +178,9 @@ while args.stop_after is None or n < args.stop_after:
             p.tap(args.paste_button_x, args.paste_button_y, args.sleep_short)  # Press paste
             p.tap(args.ok_button_x, args.ok_button_y, args.sleep_short)  # Press OK on edit line
         else:
-            p.key('KEYCODE_PASTE', args.sleep_short)  # Paste into rename
-            p.key('KEYCODE_TAB', args.sleep_short)  # Press tab
-            p.key('KEYCODE_ENTER', args.sleep_short)  # Press enter
+            p.key('KEYCODE_PASTE KEYCODE_TAB KEYCODE_ENTER', args.sleep_short)  # Paste into rename
+            # p.key('', args.sleep_short)  # Press tab
+            # p.key('', args.sleep_short)  # Press enter
 
         p.tap(args.save_button_x, args.save_button_y, args.sleep_long)  # Press OK on Pokemon go rename dialog
 
