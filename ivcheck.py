@@ -1,3 +1,44 @@
+## Character Sorting Table
+# *This is the order in which PokémonGo displays your pokémon when sorting by name (A-Z}.*
+
+# - `꩜ ` (the special @, does not exist on Gboard)
+# - `$`
+# - `%`
+# - `&`
+# - `*`
+# - `,`
+# - `.`
+# - `?`
+# - `_`
+# - `¡` (alongside `!`)
+# - `¿` (alongside `?`)
+# - `“` (alongside `"`)
+# - `›` (alongside `'`)
+# - `+`
+# - `‽` (alongside `?`)
+# - `⁺` (superscript plus, does not exist on Gboard)
+# - `»` (alongside `"`)
+# - `÷`
+# - `×`
+# - `∅` (alingside `0`)
+# - `≈` (alongside `=`)
+# - `↑` (alingside `^`)
+# - `→` (alingside `^`)
+# - `↓` (alingside `^`)
+# - `←` (alingside `^`)
+# - `·` (alongside `-`)
+# - `†` (alongside `*`)
+# - `‡` (alongside `*`)
+# - `•`
+# - `★` (alongside `*`)
+# - `♠` (alongside `•`)
+# - `♦` (alongside `•`)
+# - `♣` (alongside `•`)
+# - `♥` (alongside `•`)
+# - `✓`
+# - `‰`
+# - `∞` (alongside `=`)
+
 import pokemonlib
 import argparse
 #import subprocess
