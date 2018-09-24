@@ -6,12 +6,15 @@
 This is a (not so small anymore) script which uses adb, clipper and other stuff to automatically rename your pokémons in Pokémon Go using CalcyIV's renaming feature.
 
 ## Usage
-Clone the repo/download the files, `cd` into the directory and run the main file `ivcheck.py`:
+1. Open CalcyIV
+2. Open Pokémon Go, and go to the first pokémon you'd like to rename. **The script "swipes" forward**, so sort your pokémons in a way that the following pokémons are the one you want to rename (probably A-Z).
+3. Clone the repo/download the files, `cd` into the directory and run the main file `ivcheck.py`:
 
         $ ./ivcheck.py
 or
 
         $ python ivcheck.py
+4. **Watch it!** This is an automated tool that simulates taps and swipes and stuff. **Things COULD go wrong!**
 ## Problems?
 * It's going too fast for my phone
     - This was developed and tested on a Google Pixel. You can slow it down by increasing the `--sleep_short`, `--sleep_long` and `--sleep_super_long` arguments (in seconds), like zo:
