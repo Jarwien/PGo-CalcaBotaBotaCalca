@@ -1,18 +1,23 @@
-[![Youtube video showing usage](http://img.youtube.com/vi/Z2GLk0VTkIs/0.jpg)](http://www.youtube.com/watch?v=Z2GLk0VTkIs)
+# Calça Bota, a Bota Calça
 
-# Description
-This is a small script which uses adb to send touch and key events to your phone, in combination with Calcy IV it can automatically rename all of your pokemon. This script doesn't login to the pokemon go servers using the "unofficial API" and only relies on an Android phone (sorry, iPhone users). The upside to this is that you're very unlikely to get banned for using it. The downside is that it's a lot slower, and that you can't use your phone while it's running.
+*This project is a fork of [Azelphur/PokemonGo-CalcyIV-Renamer](https://github.com/Azelphur/PokemonGo-CalcyIV-Renamer).*
 
-# Warnings
-This script essentially blindly sends touch events to your phone. If a popup appears over where the script thinks a button is, or if your phone lags, it can do unintended things. Please keep an eye on your phone while it is running. If it transfers your shiny 100% dragonite, it's because you weren't watching it.
+## Description
+This is a (not so small anymore) script which uses adb, clipper and other stuff to automatically rename your pokémons in Pokémon Go using CalcyIV's renaming feature.
 
-# Usage
-Simply download the files, and run `python ivcheck.py`, the script depends on python-pillow, so be sure to install it.
+## Usage
+Clone the repo/download the files, `cd` into the directory and run the main file `ivcheck.py`:
+        $ ./ivcheck.py
 
-# (probably) FAQ
+or
+        $ python ivcheck.py
+
+## Problems?
 * It's going too fast for my phone
-... This was developed and tested on a OnePlus 3T, so the script runs quite fast. You can slow it down by increasing the --sleep_short and --sleep_long arguments, which default to 0.7 and 1.5 respectively.
-* It's not pasting the pokemons name
-... For some reason the paste key event doesn't work on some phones, use the --nopaste argument to fix it.
-* Can it do multiple phones at the same time
-... Sure, you just have to run multiple instances. Run `adb devices` to get the device ids for your phones, then run multiple instances of the script with --device_id=XXXXX
+    - This was developed and tested on a Google Pixel. You can slow it down by increasing the --sleep_short, --sleep_long and --sleep_super_long arguments (in seconds), like zo:
+            $ ./ivcheck.py --sleep_short=0.4 --sleep_long=2 --sleep_super_long=3
+
+    - When you find a combination that works for you, you can hardcode the arguments by editing the defaults on the file `ivcheck.py`, just Ctrl+F them.
+
+* It's not pasting the pokémon names:
+    - In older versions of android, the PASTE keycode doesn't work. Try the --no-paste argument, though I have not developed it nor tested it, so it may not work. This will be fixed in the future alongside a complete refactoring of azure's code.
