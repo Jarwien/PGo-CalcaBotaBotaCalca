@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 ## Character Sorting Table
 # *This is the order in which PokémonGo displays your pokémon when sorting by name (A-Z}.*
 
