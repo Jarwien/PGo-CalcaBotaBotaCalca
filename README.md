@@ -11,10 +11,12 @@ This is a (not so small anymore) script which uses adb, clipper and other stuff 
 3. Clone the repo/download the files, `cd` into the directory and run the main file `ivcheck.py`:
 
         $ ./ivcheck.py
-or
+    or
 
         $ python ivcheck.py
+
 4. **Watch it!** This is an automated tool that simulates taps and swipes and stuff. **Things COULD go wrong!**
+
 ## Problems?
 * It's going too fast for my phone
     - This was developed and tested on a Google Pixel. You can slow it down by increasing the `--sleep_short`, `--sleep_long` and `--sleep_super_long` arguments (in seconds), like zo:
