@@ -7,17 +7,17 @@ This is a (not so small anymore) script which uses adb, clipper and other stuff 
 
 ## Usage
 Clone the repo/download the files, `cd` into the directory and run the main file `ivcheck.py`:
+
         $ ./ivcheck.py
-
 or
-        $ python ivcheck.py
 
+        $ python ivcheck.py
 ## Problems?
 * It's going too fast for my phone
-    - This was developed and tested on a Google Pixel. You can slow it down by increasing the --sleep_short, --sleep_long and --sleep_super_long arguments (in seconds), like zo:
-            $ ./ivcheck.py --sleep_short=0.4 --sleep_long=2 --sleep_super_long=3
+    - This was developed and tested on a Google Pixel. You can slow it down by increasing the `--sleep_short`, `--sleep_long` and `--sleep_super_long` arguments (in seconds), like zo:
 
+            $ ./ivcheck.py --sleep_short=0.4 --sleep_long=2 --sleep_super_long=3
     - When you find a combination that works for you, you can hardcode the arguments by editing the defaults on the file `ivcheck.py`, just Ctrl+F them.
 
 * It's not pasting the pokémon names:
-    - In older versions of android, the PASTE keycode doesn't work. Try the --no-paste argument, though I have not developed it nor tested it, so it may not work. This will be fixed in the future alongside a complete refactoring of azure's code.
+    - In older versions of android, the PASTE keycode doesn't work. Try the `--no-paste` argument, though I have not developed it nor tested it, so it may not work. This will be fixed in the future alongside a complete refactoring of azure's code.
