@@ -44,6 +44,7 @@
 import pokemonlib
 import argparse
 #import subprocess
+import subprocess
 
 skip_count = 0
 
@@ -124,6 +125,15 @@ def check_calcy_logcat(p):
                 print("CalcyIV's got an error!")
                 raise pokemonlib.CalcyIVError
             else:
+                # TODO: add this subprocess.run() as functions inside pokemonlib
+                # and check for clipper presence.
+                if "Unown" in line:
+                    print("This is an Unknown! Using alternate rename scheme...")
+                    subprocess.run(["adb", "-s", p.device_id, "shell", "am", "broadcast", "-a", "clipper.set", "-e", "text", "‽\ Unown"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                elif "Pidgey" in line:
+                    print("This is a Pidgey... Whatevs...")
+                    subprocess.run(["adb", "-s", p.device_id, "shell", "am", "broadcast", "-a", "clipper.set", "-e", "text", "∞\ Pidgey"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
                 print(line)
                 print("Everything seems ok! Renaming pokémon...")
                 return True
