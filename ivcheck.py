@@ -166,7 +166,7 @@ while args.stop_after is None or n < args.stop_after:
             p.tap(97.22, 20.31, args.sleep_super_long)
             skip_count = 0
             continue
-        print("Attempt nº " + str(skip_count) + "Trying again...")
+        print("Attempt nº " + str(skip_count) + ". Trying again...")
         continue
 
     if not args.no_rename:
