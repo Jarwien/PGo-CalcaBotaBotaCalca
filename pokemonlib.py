@@ -41,7 +41,6 @@ class PokemonGo(object):
             self.device_id = device_id
         self.use_fallback_screenshots = False
         self.resolution = None
-        logger.info('Initializing...')
         try:
             return_code, stdout, stderr = self.run(["adb", "-s", self.device_id, "shell", "pidof", "-s", "tesmath.calcy"])
         except Exception as e:
@@ -52,7 +51,7 @@ class PokemonGo(object):
         logger.debug("Running %s", args)
         p = subprocess.Popen([str(arg) for arg in args], stdout=subprocess.PIPE)
         stdout, stderr = p.communicate()
-        logger.debug("Return code %d", p.returncode)
+        # logger.debug("Return code %d", p.returncode)
         return (p.returncode, stdout, stderr)
 
     def screencap(self):
@@ -192,8 +191,7 @@ class PokemonGo(object):
             Deprecated (android 7.0 or higher only):
                 adb logcat -d --pid=$(adb shell pidof -s tesmath.calcy) | tac | grep "Received values" -B1000 -m1
 
-
-
+            TODO: detect android version and use one of the two versions, because the general one is very slow.
         '''
         logger.info("Grabbing CalcyIV's log...")
         # code, stdout, stderr = self.run(["adb", "logcat", "--pid={}".format(self.pid),])
