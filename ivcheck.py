@@ -100,8 +100,6 @@ parser.add_argument('--use_intents', type=bool, default=True,
                     help="Use intents to communicate with calcyIV.")
 args = parser.parse_args()
 
-print('HELLO M\'LOVE\n\nBoa renomeada! :*')
-
 p = pokemonlib.PokemonGo(args.device_id)
 n = 0
 

@@ -102,12 +102,12 @@ class PokemonGo(object):
 
     def tap(self, x, y, sleep):
         self.run(["adb", "-s", self.device_id, "shell", "input", "tap", self.get_x(x), self.get_y(y)])
-        logger.debug("Tapping on " + str(self.get_x(x)) + "x" + str(self.get_y(y)) + " and waiting " + str(sleep) + "seconds...")
+        logger.info("Tapping on " + format(self.get_x(x), '>4d') + " x " + format(self.get_y(y), '<4d') + "  (" + format(x, '>.2f') + "% x " + format(y, '<.2f') + "%) and waiting " + str(sleep) + "seconds...")
         time.sleep(sleep)
 
     def key(self, key, sleep):
         self.run(["adb", "-s", self.device_id, "shell", "input", "keyevent", key])
-        logger.debug("Pressing key " + key + " and waiting " + str(sleep) + "seconds...")
+        logger.info("Pressing key " + key + " and waiting " + str(sleep) + "seconds...")
         time.sleep(sleep)
 
     def swipe(self, x1, y1, x2, y2, sleep, duration=None):
@@ -193,10 +193,15 @@ class PokemonGo(object):
 
             TODO: detect android version and use one of the two versions, because the general one is very slow.
         '''
-        logger.info("Grabbing CalcyIV's log...")
         # code, stdout, stderr = self.run(["adb", "logcat", "--pid={}".format(self.pid),])
         # output = self.run(['sh', '-c', 'adb logcat --pid=' + self.pid + ' | tac | grep "Received values" -B1000 -m1'])
+
+
+        logger.info("Grabbing CalcyIV's log...")
+        # Android 6 and lower:
         processOutput = subprocess.run(['sh', '-c', 'adb logcat -d | grep ' + self.pid + ' | tac | grep "Received values" -B1000 -m1'], stdout=subprocess.PIPE)
+        # Android 7 and higher:
         #processOutput = subprocess.run(['adb', 'logcat' '--pid=' + self.pid, '-d | tac | grep "Received values" -B1000 -m1\''], stdout=subprocess.PIPE)
+
         outputSanitizedList = processOutput.stdout.decode('utf-8').strip().splitlines()
         return outputSanitizedList
