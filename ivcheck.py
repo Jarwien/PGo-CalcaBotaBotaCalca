@@ -48,56 +48,38 @@ import subprocess
 skip_count = 0
 
 parser = argparse.ArgumentParser(description='Pokemon go renamer')
-parser.add_argument('--device_id', type=str, default=None,
+parser.add_argument('--device-id', type=str, default=None,
                     help="Optional, if not specified the phone is automatically detected. Useful only if you have multiple phones connected. Use adb devices to get a list of ids.")
-parser.add_argument('--adb_path', type=str, default="adb",
+parser.add_argument('--adb-path', type=str, default="adb",
                     help="If adb isn't on your PATH, use this option to specify the location of adb.")
-parser.add_argument('--nopaste', action='store_const', const=True, default=False,
-                    help="Use this switch if your device doesn't support the paste key, for example if you're using a Samsung.")
-parser.add_argument('--no_rename', action='store_const', const=True, default=False,
+parser.add_argument('--nopaste', action='store-const', const=True, default=False,
+                    help="Use this switch if your device doesn't support the paste key, for example if you're using a Samsung (Requires Clipper).")
+parser.add_argument('--norename', action='store-const', const=True, default=False,
                     help="Don't rename, useful for just loading every pokemon into calcy IV history for CSV export.")
-parser.add_argument('--wait_after_error', action='store_const', const=True, default=False,
+parser.add_argument('--wait-after-error', action='store-const', const=True, default=False,
                     help="Upon calcy IV error, wait for user input.")
-parser.add_argument('--max_retries', type=int, default=5,
+parser.add_argument('--max-retries', type=int, default=5,
                     help="Maximum retries, set to 0 for unlimited.")
-parser.add_argument('--stop_after', type=int, default=None,
+parser.add_argument('--stop-after', type=int, default=None,
                     help="Stop after this many pokemon.")
-parser.add_argument('--sleep_short', type=float, default=0.2,
+parser.add_argument('--sleep-short', type=float, default=0.2,
                     help="Sleep duration for shorter pauses.")
-parser.add_argument('--sleep_long', type=float, default=1.3,
+parser.add_argument('--sleep-long', type=float, default=1.3,
                     help="Sleep duration for longer pauses.")
-parser.add_argument('--sleep_super_long', type=float, default=2.1,
+parser.add_argument('--sleep-super-long', type=float, default=2.1,
                     help="Sleep duration for super long pauses.")
-parser.add_argument('--name_line_x', type=float, default=50.74,
+parser.add_argument('--name-line-x', type=float, default=50.74,
                     help="X coordinate (in %) of name edit button position.")
-parser.add_argument('--name_line_y', type=float, default=47.97,
+parser.add_argument('--name-line-y', type=float, default=47.97,
                     help="Y coordinate (in %) of name edit button position.")
-parser.add_argument('--ok_button_x', type=float, default=86.46,
+parser.add_argument('--ok-button-x', type=float, default=86.46,
                     help="X coordinate (in %) of OK button position for keyboard input.")
-parser.add_argument('--ok_button_y', type=float, default=57.08,
+parser.add_argument('--ok-button-y', type=float, default=57.08,
                     help="Y coordinate (in %) of OK button position for keyboard input.")
-parser.add_argument('--save_button_x', type=float, default=51.48,
+parser.add_argument('--save-button-x', type=float, default=51.48,
                     help="X coordinate (in %) of OK button position to name change dialog.")
-parser.add_argument('--save_button_y', type=float, default=55.47,
+parser.add_argument('--save-button-y', type=float, default=55.47,
                     help="Y coordinate (in %) of OK button position to name change dialog.")
-parser.add_argument('--edit_box_x', type=float, default=92.59,
-                    help="X coordinate (in %) of keyboard input field to open keyboard (used with --nopaste).")
-parser.add_argument('--edit_box_y', type=float, default=88.54,
-                    help="Y coordinate (in %) of keyboard input field to open keyboard (used with --nopaste).")
-parser.add_argument('--edit_line_x', type=float, default=6.67,
-                    help="X coordinate (in %) of keyboard input field to open edit dialog for pasting (used with --nopaste).")
-parser.add_argument('--edit_line_y', type=float, default=57.29,
-                    help="Y coordinate (in %) of keyboard input field to open edit dialog for pasting (used with --nopaste).")
-parser.add_argument('--paste_button_x', type=float, default=11.38,
-                    help="X coordinate (in %) of paste button position (used with --nopaste).")
-parser.add_argument('--paste_button_y', type=float, default=64.53,
-                    help="Y coordinate (in %) of paste button position (used with --nopaste).")
-parser.add_argument('--calcy_button_x', type=float, default=7.40,
-                    help="X coordinate (in %) of calcyIV button.")
-parser.add_argument('--calcy_button_y', type=float, default=46.87,
-                    help="Y coordinate (in %) of calcyIV button.")
-parser.add_argument('--use_intents', type=bool, default=True,
-                    help="Use intents to communicate with calcyIV.")
 args = parser.parse_args()
 
 p = pokemonlib.PokemonGo(args.device_id)
