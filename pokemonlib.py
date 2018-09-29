@@ -31,7 +31,7 @@ class CalcyIVNotRunning(Exception):
 
 
 class PokemonGo(object):
-    def __init__(self, device_id):
+    def __init__(self, device_id, user_id):
         devices = self.get_devices()
         if devices == [] or (device_id is not None and device_id not in devices):
             raise PhoneNotConnectedError
@@ -39,6 +39,10 @@ class PokemonGo(object):
             self.device_id = devices[0]
         else:
             self.device_id = device_id
+        if user_id is None:
+            self.user_id = None
+        else:
+            self.user_id = user_id
         self.use_fallback_screenshots = False
         self.resolution = None
         try:
@@ -172,12 +176,18 @@ class PokemonGo(object):
         return devices
 
     def send_intent(self, intent, package, sleep):
-        # intent without box:
-        # adb shell 'am broadcast -a tesmath.calcy.ACTION_ANALYZE_SCREEN --ez silentMode true -n tesmath.calcy/.IntentReceiver'
 
         # with output box:
         # return_code, stdout, stderr = self.run(["adb", "-s", self.device_id, "shell", "am broadcast -a {} -n {}".format(intent, package)])
-        return_code, stdout, stderr = self.run(["adb", "-s", self.device_id, "shell", "am broadcast -a {} --ez silentMode true -n {}".format(intent, package)])
+
+
+        if self.user_id is not None:
+            # for calcy inside island
+            return_code, stdout, stderr = self.run(["adb", "-s", self.device_id, "shell", "am broadcast --user " + self.user_id + " -a {} --ez silentMode true -n {}".format(intent, package)])
+        else:
+            # without output box (default)
+            return_code, stdout, stderr = self.run(["adb", "-s", self.device_id, "shell", "am broadcast -a {} --ez silentMode true -n {}".format(intent, package)])
+
         logger.debug("Sending intent: " + intent + " to " + package + "...")
         time.sleep(sleep)
 

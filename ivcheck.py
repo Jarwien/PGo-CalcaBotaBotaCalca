@@ -48,41 +48,47 @@ import subprocess
 skip_count = 0
 
 parser = argparse.ArgumentParser(description='Pokemon go renamer')
-parser.add_argument('--device-id', type=str, default=None,
+parser.add_argument('-d', '--device-id', type=str, default=None,
                     help="Optional, if not specified the phone is automatically detected. Useful only if you have multiple phones connected. Use adb devices to get a list of ids.")
 parser.add_argument('--adb-path', type=str, default="adb",
                     help="If adb isn't on your PATH, use this option to specify the location of adb.")
-parser.add_argument('--nopaste', action='store-const', const=True, default=False,
+parser.add_argument('-u', '--user', type=str, default=None,
+                    help="Specify the user when CalcyIV is running on another use, like when running Island or other sandboxing app.")
+parser.add_argument('--no-paste', action='store_const', const=True, default=False,
                     help="Use this switch if your device doesn't support the paste key, for example if you're using a Samsung (Requires Clipper).")
-parser.add_argument('--norename', action='store-const', const=True, default=False,
+parser.add_argument('--no-rename', action='store_const', const=True, default=False,
                     help="Don't rename, useful for just loading every pokemon into calcy IV history for CSV export.")
-parser.add_argument('--wait-after-error', action='store-const', const=True, default=False,
+parser.add_argument('-w', '--wait-after-error', action='store_const', const=True, default=False,
                     help="Upon calcy IV error, wait for user input.")
-parser.add_argument('--max-retries', type=int, default=5,
+parser.add_argument('-m', '--max-retries', type=int, default=5,
                     help="Maximum retries, set to 0 for unlimited.")
-parser.add_argument('--stop-after', type=int, default=None,
+parser.add_argument('-s', '--stop-after', type=int, default=None,
                     help="Stop after this many pokemon.")
-parser.add_argument('--sleep-short', type=float, default=0.2,
+parser.add_argument('-ss', '--sleep-short', type=float, default=0.2,
                     help="Sleep duration for shorter pauses.")
-parser.add_argument('--sleep-long', type=float, default=1.3,
+parser.add_argument('-sl', '--sleep-long', type=float, default=1.3,
                     help="Sleep duration for longer pauses.")
-parser.add_argument('--sleep-super-long', type=float, default=2.1,
+parser.add_argument('-sh', '--sleep-huge', type=float, default=2.1,
                     help="Sleep duration for super long pauses.")
+
 parser.add_argument('--name-line-x', type=float, default=50.74,
-                    help="X coordinate (in %) of name edit button position.")
+                    help="X coordinate (in %%) of name edit button position.")
 parser.add_argument('--name-line-y', type=float, default=47.97,
-                    help="Y coordinate (in %) of name edit button position.")
+                    help="Y coordinate (in %%) of name edit button position.")
+
 parser.add_argument('--ok-button-x', type=float, default=86.46,
-                    help="X coordinate (in %) of OK button position for keyboard input.")
+                    help="X coordinate (in %%) of OK button position for keyboard input.")
 parser.add_argument('--ok-button-y', type=float, default=57.08,
-                    help="Y coordinate (in %) of OK button position for keyboard input.")
+                    help="Y coordinate (in %%) of OK button position for keyboard input.")
+
 parser.add_argument('--save-button-x', type=float, default=51.48,
-                    help="X coordinate (in %) of OK button position to name change dialog.")
+                    help="X coordinate (in %%) of OK button position to name change dialog.")
 parser.add_argument('--save-button-y', type=float, default=55.47,
-                    help="Y coordinate (in %) of OK button position to name change dialog.")
+                    help="Y coordinate (in %%) of OK button position to name change dialog.")
+
 args = parser.parse_args()
 
-p = pokemonlib.PokemonGo(args.device_id)
+p = pokemonlib.PokemonGo(args.device_id, args.user)
 n = 0
 
 
@@ -110,6 +116,7 @@ def check_calcy_logcat(p):
                 # and check for clipper presence.
                 if "Unown" in line:
                     print("This is an Unknown! Using alternate rename scheme...")
+
                     subprocess.run(["adb", "-s", p.device_id, "shell", "am", "broadcast", "-a", "clipper.set", "-e", "text", "‽\ Unown"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 elif "Pidgey" in line:
                     print("This is a Pidgey... Whatevs...")
@@ -128,9 +135,8 @@ def check_calcy_logcat(p):
 
 
 while args.stop_after is None or n < args.stop_after:
-    if args.use_intents:
-        print("Sending check signal to CalcyIV...")
-        p.send_intent("tesmath.calcy.ACTION_ANALYZE_SCREEN", "tesmath.calcy/.IntentReceiver", args.sleep_long)
+    print("Sending check signal to CalcyIV...")
+    p.send_intent("tesmath.calcy.ACTION_ANALYZE_SCREEN", "tesmath.calcy/.IntentReceiver", args.sleep_long)
 
     try:
         check_calcy_logcat(p)
@@ -145,13 +151,13 @@ while args.stop_after is None or n < args.stop_after:
         if skip_count > args.max_retries and args.max_retries != 0:
             print("CalcyIVError " + str(args.max_retries) + " times in a row, skipping to next pokemon")
             n = n + 1
-            p.tap(97.22, 20.31, args.sleep_super_long)
+            p.tap(97.22, 20.31, args.sleep_huge)
             skip_count = 0
             continue
         print("Attempt nº " + str(skip_count) + ". Trying again...")
         continue
 
-    if not args.no_rename:
+    if not args.norename:
         # p.tap(54.91, 69.53, args.sleep_short)  # Dismiss Calcy IV
         p.tap(args.name_line_x, args.name_line_y, args.sleep_short)  # Rename
         if args.nopaste:
@@ -167,5 +173,5 @@ while args.stop_after is None or n < args.stop_after:
         p.tap(args.save_button_x, args.save_button_y, args.sleep_long)  # Press OK on Pokemon go rename dialog
 
     n = n + 1
-    p.tap(97.22, 20.31, args.sleep_super_long)  # Tap to next pokemon
+    p.tap(97.22, 20.31, args.sleep_huge)  # Tap to next pokemon
 
