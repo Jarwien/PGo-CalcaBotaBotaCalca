@@ -45,6 +45,7 @@ import random
 import pokemonlib
 import argparse
 import subprocess
+import time
 
 #############
 # ARGUMENTS #
@@ -71,7 +72,7 @@ parser.add_argument('-ss', '--sleep-short', type=float, default=0.2,
                     help="Sleep duration for shorter pauses.")
 parser.add_argument('-sl', '--sleep-long', type=float, default=1.3,
                     help="Sleep duration for longer pauses.")
-parser.add_argument('-sh', '--sleep-huge', type=float, default=2.1,
+parser.add_argument('-sh', '--sleep-huge', type=float, default=2.3,
                     help="Sleep duration for super long pauses.")
 
 parser.add_argument('--name-line-x', type=float, default=50.74,
@@ -108,14 +109,13 @@ def check_calcy_logcat(p):
     calcyLogcat = p.get_last_logcat()
 
     if not calcyLogcat:
-        i = 0
-        while not calcyLogcat:
-            calcyLogcat = p.get_last_logcat()
-            i = i + 1
-            if i > 5:
-                print('Something weird went on! I couldn\'t found the logcat output from CalcyIV! Are you sure you\'re running CalcyIV?')
-                print('If you\'re sure, try increasing the sleep-huge time from ' + str(args.sleep_huge) + ' to something bigger (in seconds).')
-                raise pokemonlib.CalcyIVNotRunning
+        calcyLogcat = p.get_last_logcat(2)
+        if not calcyLogcat:
+            print('I couldn\'t get the logcat output from CalcyIV! Are you sure you\'re running CalcyIV?')
+            print('If you\'re sure, try increasing the sleep-huge time from ' + str(args.sleep_huge) + ' to something bigger (in seconds).')
+            print('I\'ll do that for you now, but you should change the defaults if this works. I\'m increasing the value by 0.5 seconds.')
+            args.sleep_huge = args.sleep_huge + 0.5
+            raise pokemonlib.CalcyIVError
 
     for line in calcyLogcat:
         # print("line: " + line)

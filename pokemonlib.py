@@ -58,7 +58,7 @@ class PokemonGo(object):
         try:
             # Android Version
             return_code, stdout, stderr = self.run(["adb", "-s", self.device_id, "shell", "getprop", "ro.build.version.release"])
-            self.version_android = stdout.decode('utf-8').strip()[0]
+            self.version_android = int(stdout.decode('utf-8').strip()[0])
         except Exception as e:
             # Assume old phone
             logger.info('Could not detect your Android version! :(')
@@ -67,7 +67,7 @@ class PokemonGo(object):
         try:
             # SDK Version
             return_code, stdout, stderr = self.run(["adb", "-s", self.device_id, "shell", "getprop", "ro.build.version.sdk"])
-            self.version_sdk = stdout.decode('utf-8').strip()
+            self.version_sdk = int(stdout.decode('utf-8').strip())
         except Exception as e:
             # Assume old phone
             logger.info('Could not detect your SDK version! :(')
@@ -128,17 +128,17 @@ class PokemonGo(object):
 
     def tap(self, x, y, sleep):
         self.run(["adb", "-s", self.device_id, "shell", "input", "tap", self.get_x(x), self.get_y(y)])
-        logger.info("Tapping on " + format(self.get_x(x), '>4d') + " x " + format(self.get_y(y), '<4d') + "  (" + format(x, '>.2f') + "% x " + format(y, '<.2f') + "%) and waiting " + str(sleep) + "seconds...")
+        logger.debug("Tapping on " + format(self.get_x(x), '>4d') + " x " + format(self.get_y(y), '<4d') + "  (" + format(x, '>.2f') + "% x " + format(y, '<.2f') + "%) and waiting " + str(sleep) + "seconds...")
         time.sleep(sleep)
 
     def key(self, key, sleep):
         self.run(["adb", "-s", self.device_id, "shell", "input", "keyevent", key])
-        logger.info("Pressing key " + key + " and waiting " + str(sleep) + " seconds...")
+        logger.debug("Pressing key " + key + " and waiting " + str(sleep) + " seconds...")
         time.sleep(sleep)
 
     def type(self, text, sleep):
         self.run(["adb", "-s", self.device_id, "shell", "input", "type", text])
-        logger.info("Writing " + text + " and waiting " + str(sleep) + " seconds...")
+        logger.debug("Writing " + text + " and waiting " + str(sleep) + " seconds...")
         time.sleep(sleep)
 
     def swipe(self, x1, y1, x2, y2, sleep, duration=None):
@@ -215,7 +215,7 @@ class PokemonGo(object):
 
         time.sleep(sleep)
 
-    def get_last_logcat(self):
+    def get_last_logcat(self, sleep=0):
         '''
         Grabs only the last return line of CalcyIV, and everything after it,
         instead of watching the logcat, which causes problems with buffers sync.
@@ -225,16 +225,17 @@ class PokemonGo(object):
         Or, for Android 7 and higher:
             sh -c 'adb logcat -d --pid=$(adb shell pidof -s tesmath.calcy) | tac | grep "Received values" -B1000 -m1'
         '''
+        time.sleep(sleep)
 
         logger.info("Grabbing CalcyIV's log...")
         # TODO: loop here until the log is good to go, instead of looping on the main script (ivcheck.py)
         # while outputSanitizedList is not empty, something like that.
         if self.version_android >= 7:
             # Android 7 and higher have logcat with '--pid' argument available.
-            processOutput = subprocess.run(['sh', '-c', 'adb logcat -d -t 10 --pid=' + self.pid + ' | tac | grep "Received values" -B1000 -m1'], stdout=subprocess.PIPE)
+            processOutput = subprocess.run(['sh', '-c', 'adb logcat -d -t ' + str((12 + sleep)) + ' --pid=' + self.pid + ' | tac | grep "Received values" -B1000 -m1'], stdout=subprocess.PIPE)
         else:
             # Android 6 and lower:
-            processOutput = subprocess.run(['sh', '-c', 'adb logcat -d -t 10 | grep ' + self.pid + ' | tac | grep "Received values" -B1000 -m1'], stdout=subprocess.PIPE)
+            processOutput = subprocess.run(['sh', '-c', 'adb logcat -d -t ' + str((12 + sleep)) + ' | grep ' + self.pid + ' | tac | grep "Received values" -B1000 -m1'], stdout=subprocess.PIPE)
 
         outputSanitizedList = processOutput.stdout.decode('utf-8').strip().splitlines()
         return outputSanitizedList
