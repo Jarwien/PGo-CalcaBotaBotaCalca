@@ -70,7 +70,7 @@ parser.add_argument('-s', '--stop-after', type=int, default=None,
 
 parser.add_argument('-ss', '--sleep-short', type=float, default=0.2,
                     help="Sleep duration for shorter pauses.")
-parser.add_argument('-sl', '--sleep-long', type=float, default=1.3,
+parser.add_argument('-sl', '--sleep-long', type=float, default=1.5,
                     help="Sleep duration for longer pauses.")
 parser.add_argument('-sh', '--sleep-huge', type=float, default=2.3,
                     help="Sleep duration for super long pauses.")
@@ -156,7 +156,7 @@ def check_calcy_logcat(p):
 # Main Loop #
 #############
 while args.stop_after is None or n < args.stop_after:
-    print("Sending check signal to CalcyIV...")
+    print("Sending signal to CalcyIV...")
     p.send_intent("tesmath.calcy.ACTION_ANALYZE_SCREEN", "tesmath.calcy/.IntentReceiver", args.sleep_huge)
 
     try:
