@@ -41,16 +41,15 @@
 # - `‰`
 # - `∞` (alongside `=`)
 
+import random
 import pokemonlib
 import argparse
 import subprocess
 
-skip_count = 0
-
-parser = argparse.ArgumentParser(description='Pokemon go renamer')
 #############
 # ARGUMENTS #
 #############
+parser = argparse.ArgumentParser(description='Calça a bota, bota a calça!')
 parser.add_argument('-d', '--device-id', type=str, default=None,
                     help="Optional, if not specified the phone is automatically detected. Useful only if you have multiple phones connected. Use adb devices to get a list of ids.")
 parser.add_argument('--adb-path', type=str, default="adb",
@@ -67,6 +66,7 @@ parser.add_argument('-m', '--max-retries', type=int, default=5,
                     help="Maximum retries, set to 0 for unlimited.")
 parser.add_argument('-s', '--stop-after', type=int, default=None,
                     help="Stop after this many pokemon.")
+
 parser.add_argument('-ss', '--sleep-short', type=float, default=0.2,
                     help="Sleep duration for shorter pauses.")
 parser.add_argument('-sl', '--sleep-long', type=float, default=1.3,
@@ -88,7 +88,6 @@ parser.add_argument('--save-button-x', type=float, default=51.48,
                     help="X coordinate (in %%) of OK button position to name change dialog.")
 parser.add_argument('--save-button-y', type=float, default=55.47,
                     help="Y coordinate (in %%) of OK button position to name change dialog.")
-
 args = parser.parse_args()
 
 
@@ -99,6 +98,7 @@ args = parser.parse_args()
 p = pokemonlib.PokemonGo(args.device_id, args.user)
 n = 0
 skip_count = 0
+evoPokemons = ['Pidgey', 'Caterpie', 'Weedle', 'Wurmple', 'Whismur']
 
 
 #############
@@ -108,9 +108,14 @@ def check_calcy_logcat(p):
     calcyLogcat = p.get_last_logcat()
 
     if not calcyLogcat:
-        print('Something weird went on! I can\'t get the logcat output from CalcyIV!')
-        print('Are you sure you\'re running CalcyIV?')
-        raise pokemonlib.CalcyIVNotRunning
+        i = 0
+        while not calcyLogcat:
+            calcyLogcat = p.get_last_logcat()
+            i = i + 1
+            if i > 5:
+                print('Something weird went on! I couldn\'t found the logcat output from CalcyIV! Are you sure you\'re running CalcyIV?')
+                print('If you\'re sure, try increasing the sleep-huge time from ' + str(args.sleep_huge) + ' to something bigger (in seconds).')
+                raise pokemonlib.CalcyIVNotRunning
 
     for line in calcyLogcat:
         # print("line: " + line)
@@ -128,11 +133,12 @@ def check_calcy_logcat(p):
                 # and check for clipper presence.
                 if "Unown" in line:
                     print("This is an Unknown! Using alternate rename scheme...")
-
                     subprocess.run(["adb", "-s", p.device_id, "shell", "am", "broadcast", "-a", "clipper.set", "-e", "text", "‽\ Unown"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                elif "Pidgey" in line:
-                    print("This is a Pidgey... Whatevs...")
-                    subprocess.run(["adb", "-s", p.device_id, "shell", "am", "broadcast", "-a", "clipper.set", "-e", "text", "∞\ Pidgey"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                else:
+                    for pokemon in evoPokemons:
+                        if pokemon in line:
+                            print("This is a " + pokemon + "... Good for XP! ")
+                            subprocess.run(["adb", "-s", p.device_id, "shell", "am", "broadcast", "-a", "clipper.set", "-e", "text", "∞\ " + pokemon], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
                 print(line)
                 print("Everything seems ok! Renaming pokémon...")
@@ -151,7 +157,7 @@ def check_calcy_logcat(p):
 #############
 while args.stop_after is None or n < args.stop_after:
     print("Sending check signal to CalcyIV...")
-    p.send_intent("tesmath.calcy.ACTION_ANALYZE_SCREEN", "tesmath.calcy/.IntentReceiver", args.sleep_long)
+    p.send_intent("tesmath.calcy.ACTION_ANALYZE_SCREEN", "tesmath.calcy/.IntentReceiver", args.sleep_huge)
 
     try:
         check_calcy_logcat(p)
@@ -169,7 +175,12 @@ while args.stop_after is None or n < args.stop_after:
             p.tap(97.22, 20.31, args.sleep_huge)
             skip_count = 0
             continue
-        print("Attempt nº " + str(skip_count) + ". Trying again...")
+
+        print("Attempt nº " + str(skip_count + 1) + ". Changing pokémon's angle and trying again...")
+
+        # The following swipes at fixed 26% height (y), from x = [30%-70%, 30-70%], where '30%-70%' is chosen *randomly*.
+        # This makes it more probable to get a good angle, but it's probably overkill.
+        p.swipe(random.randint(30, 70), 26, random.randint(30, 70), 26, args.sleep_short, 100)
         continue
 
     if not args.no_rename:
