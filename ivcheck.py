@@ -48,6 +48,9 @@ import subprocess
 skip_count = 0
 
 parser = argparse.ArgumentParser(description='Pokemon go renamer')
+#############
+# ARGUMENTS #
+#############
 parser.add_argument('-d', '--device-id', type=str, default=None,
                     help="Optional, if not specified the phone is automatically detected. Useful only if you have multiple phones connected. Use adb devices to get a list of ids.")
 parser.add_argument('--adb-path', type=str, default="adb",
@@ -88,10 +91,19 @@ parser.add_argument('--save-button-y', type=float, default=55.47,
 
 args = parser.parse_args()
 
+
+########
+# Init #
+########
+## Initializes PokemonGo object
 p = pokemonlib.PokemonGo(args.device_id, args.user)
 n = 0
+skip_count = 0
 
 
+#############
+# Functions #
+#############
 def check_calcy_logcat(p):
     calcyLogcat = p.get_last_logcat()
 
@@ -134,6 +146,9 @@ def check_calcy_logcat(p):
     raise pokemonlib.CalcyIVError
 
 
+#############
+# Main Loop #
+#############
 while args.stop_after is None or n < args.stop_after:
     print("Sending check signal to CalcyIV...")
     p.send_intent("tesmath.calcy.ACTION_ANALYZE_SCREEN", "tesmath.calcy/.IntentReceiver", args.sleep_long)
@@ -157,10 +172,9 @@ while args.stop_after is None or n < args.stop_after:
         print("Attempt nº " + str(skip_count) + ". Trying again...")
         continue
 
-    if not args.norename:
-        # p.tap(54.91, 69.53, args.sleep_short)  # Dismiss Calcy IV
+    if not args.no_rename:
         p.tap(args.name_line_x, args.name_line_y, args.sleep_short)  # Rename
-        if args.nopaste:
+        if args.no_paste:
             p.tap(args.edit_box_x, args.edit_box_y, args.sleep_short)  # Press in the edit box
             p.swipe(args.edit_line_x, args.edit_line_y, args.edit_line_x, args.edit_line_y, args.sleep_short, 600)  # Use swipe to simulate a long press to bring up copy/paste dialog
             p.tap(args.paste_button_x, args.paste_button_y, args.sleep_short)  # Press paste
