@@ -55,6 +55,24 @@ class PokemonGo(object):
             raise CalcyIVNotRunning
         self.pid = stdout.decode('utf-8').strip()
 
+        try:
+            # Android Version
+            return_code, stdout, stderr = self.run(["adb", "-s", self.device_id, "shell", "getprop", "ro.build.version.release"])
+            self.version_android = stdout.decode('utf-8').strip()[0]
+        except Exception as e:
+            # Assume old phone
+            logger.info('Could not detect your Android version! :(')
+            self.version_android = 4
+
+        try:
+            # SDK Version
+            return_code, stdout, stderr = self.run(["adb", "-s", self.device_id, "shell", "getprop", "ro.build.version.sdk"])
+            self.version_sdk = stdout.decode('utf-8').strip()
+        except Exception as e:
+            # Assume old phone
+            logger.info('Could not detect your SDK version! :(')
+            self.version_sdk = 0
+
     def run(self, args):
         logger.debug("Running %s", args)
         p = subprocess.Popen([str(arg) for arg in args], stdout=subprocess.PIPE)
@@ -193,26 +211,25 @@ class PokemonGo(object):
         time.sleep(sleep)
 
     def get_last_logcat(self):
-        ''' Grabs only the last return line of CalcyIV, and everything after it,
-            instead of watching the logcat, which causes problems with buffers sync.
-
-            The same as running:
-                sh -c 'adb logcat -d | \grep $(adb shell pidof -s tesmath.calcy) | tac | grep "Received values" -B1000 -m1'
-
-            Deprecated (android 7.0 or higher only):
-                adb logcat -d --pid=$(adb shell pidof -s tesmath.calcy) | tac | grep "Received values" -B1000 -m1
-
-            TODO: detect android version and use one of the two versions, because the general one is very slow.
         '''
-        # code, stdout, stderr = self.run(["adb", "logcat", "--pid={}".format(self.pid),])
-        # output = self.run(['sh', '-c', 'adb logcat --pid=' + self.pid + ' | tac | grep "Received values" -B1000 -m1'])
+        Grabs only the last return line of CalcyIV, and everything after it,
+        instead of watching the logcat, which causes problems with buffers sync.
 
+        The same as running:
+            sh -c 'adb logcat -d | \grep $(adb shell pidof -s tesmath.calcy) | tac | grep "Received values" -B1000 -m1'
+        Or, for Android 7 and higher:
+            sh -c 'adb logcat -d --pid=$(adb shell pidof -s tesmath.calcy) | tac | grep "Received values" -B1000 -m1'
+        '''
 
         logger.info("Grabbing CalcyIV's log...")
-        # Android 6 and lower:
-        processOutput = subprocess.run(['sh', '-c', 'adb logcat -d | grep ' + self.pid + ' | tac | grep "Received values" -B1000 -m1'], stdout=subprocess.PIPE)
-        # Android 7 and higher:
-        #processOutput = subprocess.run(['adb', 'logcat' '--pid=' + self.pid, '-d | tac | grep "Received values" -B1000 -m1\''], stdout=subprocess.PIPE)
+        # TODO: loop here until the log is good to go, instead of looping on the main script (ivcheck.py)
+        # while outputSanitizedList is not empty, something like that.
+        if self.version_android >= 7:
+            # Android 7 and higher have logcat with '--pid' argument available.
+            processOutput = subprocess.run(['sh', '-c', 'adb logcat -d -t 10 --pid=' + self.pid + ' | tac | grep "Received values" -B1000 -m1'], stdout=subprocess.PIPE)
+        else:
+            # Android 6 and lower:
+            processOutput = subprocess.run(['sh', '-c', 'adb logcat -d -t 10 | grep ' + self.pid + ' | tac | grep "Received values" -B1000 -m1'], stdout=subprocess.PIPE)
 
         outputSanitizedList = processOutput.stdout.decode('utf-8').strip().splitlines()
         return outputSanitizedList
