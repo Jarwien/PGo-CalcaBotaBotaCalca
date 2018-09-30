@@ -136,6 +136,11 @@ class PokemonGo(object):
         logger.info("Pressing key " + key + " and waiting " + str(sleep) + " seconds...")
         time.sleep(sleep)
 
+    def type(self, text, sleep):
+        self.run(["adb", "-s", self.device_id, "shell", "input", "type", text])
+        logger.info("Writing " + text + " and waiting " + str(sleep) + " seconds...")
+        time.sleep(sleep)
+
     def swipe(self, x1, y1, x2, y2, sleep, duration=None):
         width, height = self.get_resolution()
         args = [
@@ -233,3 +238,9 @@ class PokemonGo(object):
 
         outputSanitizedList = processOutput.stdout.decode('utf-8').strip().splitlines()
         return outputSanitizedList
+
+    def get_clipboard_from_device(self):
+        processOutput = subprocess.run(['sh', '-c', 'adb shell am broadcast -a clipper.get | grep data | sed "s/^.*data=.\\(.*\\)..*/\\1/"'], stdout=subprocess.PIPE)
+        outputSanitizedList = processOutput.stdout.decode('utf-8').strip().splitlines()
+        return outputSanitizedList
+        return processOutput

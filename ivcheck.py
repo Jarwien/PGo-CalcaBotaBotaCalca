@@ -191,10 +191,15 @@ while args.stop_after is None or n < args.stop_after:
             p.tap(args.paste_button_x, args.paste_button_y, args.sleep_short)  # Press paste
             p.tap(args.ok_button_x, args.ok_button_y, args.sleep_short)  # Press OK on edit line
         else:
-            p.key('KEYCODE_PASTE KEYCODE_TAB KEYCODE_ENTER', args.sleep_short)  # Paste into rename
-            # p.key('', args.sleep_short)  # Press tab
-            # p.key('', args.sleep_short)  # Press enter
-
+            if p.version_sdk >= 24:
+                p.key('KEYCODE_PASTE KEYCODE_TAB KEYCODE_ENTER', args.sleep_short)  # Paste into rename
+            else:
+                # TODO: check clipper
+                clipboard = p.get_clipboard_from_device()
+                p.type(clipboard, args.sleep_short)
+                # In this case, the PGo OK button is pressed twice, first to leave the system keyboard
+                # and then to actually confirm.
+                p.tap(args.save_button_x, args.save_button_y, args.sleep_long)
         p.tap(args.save_button_x, args.save_button_y, args.sleep_long)  # Press OK on Pokemon go rename dialog
 
     n = n + 1
