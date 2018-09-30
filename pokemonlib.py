@@ -32,19 +32,23 @@ class CalcyIVNotRunning(Exception):
 
 class PokemonGo(object):
     def __init__(self, device_id, user_id):
+        self.use_fallback_screenshots = False
+        self.resolution = None
+
         devices = self.get_devices()
         if devices == [] or (device_id is not None and device_id not in devices):
             raise PhoneNotConnectedError
+
         if device_id is None:
             self.device_id = devices[0]
         else:
             self.device_id = device_id
+
         if user_id is None:
             self.user_id = None
         else:
             self.user_id = user_id
-        self.use_fallback_screenshots = False
-        self.resolution = None
+
         try:
             return_code, stdout, stderr = self.run(["adb", "-s", self.device_id, "shell", "pidof", "-s", "tesmath.calcy"])
         except Exception as e:
@@ -111,7 +115,7 @@ class PokemonGo(object):
 
     def key(self, key, sleep):
         self.run(["adb", "-s", self.device_id, "shell", "input", "keyevent", key])
-        logger.info("Pressing key " + key + " and waiting " + str(sleep) + "seconds...")
+        logger.info("Pressing key " + key + " and waiting " + str(sleep) + " seconds...")
         time.sleep(sleep)
 
     def swipe(self, x1, y1, x2, y2, sleep, duration=None):
@@ -176,19 +180,16 @@ class PokemonGo(object):
         return devices
 
     def send_intent(self, intent, package, sleep):
-
-        # with output box:
-        # return_code, stdout, stderr = self.run(["adb", "-s", self.device_id, "shell", "am broadcast -a {} -n {}".format(intent, package)])
-
-
+        logger.debug("Sending intent: " + intent + " to " + package + "...")
         if self.user_id is not None:
-            # for calcy inside island
+            # For CalcyIV inside Island or other sandboxing app
             return_code, stdout, stderr = self.run(["adb", "-s", self.device_id, "shell", "am broadcast --user " + self.user_id + " -a {} --ez silentMode true -n {}".format(intent, package)])
         else:
-            # without output box (default)
+            # Default: no white box (faster and betta).
             return_code, stdout, stderr = self.run(["adb", "-s", self.device_id, "shell", "am broadcast -a {} --ez silentMode true -n {}".format(intent, package)])
+            # Old method: with white box
+            # return_code, stdout, stderr = self.run(["adb", "-s", self.device_id, "shell", "am broadcast -a {} -n {}".format(intent, package)])
 
-        logger.debug("Sending intent: " + intent + " to " + package + "...")
         time.sleep(sleep)
 
     def get_last_logcat(self):
