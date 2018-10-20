@@ -6,9 +6,9 @@ from io import BytesIO
 
 
 logger = logging.getLogger('PokemonGo')
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
-ch.setLevel(logging.INFO)
+ch.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 ch.setFormatter(formatter)
 logger.addHandler(ch)
@@ -237,11 +237,13 @@ class PokemonGo(object):
             # Android 6 and lower:
             processOutput = subprocess.run(['sh', '-c', 'adb logcat -d -t ' + str((12 + sleep)) + ' | grep ' + self.pid + ' | tac | grep "Received values" -B1000 -m1'], stdout=subprocess.PIPE)
 
+        logger.debug(processOutput)
         outputSanitizedList = processOutput.stdout.decode('utf-8').strip().splitlines()
+        logger.debug(outputSanitizedList)
         return outputSanitizedList
 
     def get_clipboard_from_device(self):
         processOutput = subprocess.run(['sh', '-c', 'adb shell am broadcast -a clipper.get | grep data | sed "s/^.*data=.\\(.*\\)..*/\\1/"'], stdout=subprocess.PIPE)
         outputSanitizedList = processOutput.stdout.decode('utf-8').strip().splitlines()
         return outputSanitizedList
-        return processOutput
+        # return processOutput

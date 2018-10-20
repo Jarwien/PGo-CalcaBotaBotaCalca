@@ -3,7 +3,7 @@
 ## Character Sorting Table
 # *This is the order in which PokémonGo displays your pokémon when sorting by name (A-Z}.*
 
-# - `꩜ ` (the special @, does not exist on Gboard)
+# - `star꩜ ` (the special @, does not exist on Gboard)
 # - `$`
 # - `%`
 # - `&`
@@ -114,7 +114,8 @@ def check_calcy_logcat(p):
             print('I couldn\'t get the logcat output from CalcyIV! Are you sure you\'re running CalcyIV?')
             print('If you\'re sure, try increasing the sleep-huge time from ' + str(args.sleep_huge) + ' to something bigger (in seconds).')
             print('I\'ll do that for you now, but you should change the defaults if this works. I\'m increasing the value by 0.5 seconds.')
-            args.sleep_huge = args.sleep_huge + 0.5
+            if args.sleep_huge <= 4:
+                args.sleep_huge = args.sleep_huge + 0.5
             raise pokemonlib.CalcyIVError
 
     for line in calcyLogcat:
@@ -125,7 +126,7 @@ def check_calcy_logcat(p):
             print("Invalid Scan!")
             raise pokemonlib.CalcyIVError
         elif "Received values: Id: " in line:
-            if "-1" in line:
+            if " -1" in line:
                 print("CalcyIV's got an error!")
                 raise pokemonlib.CalcyIVError
             else:
