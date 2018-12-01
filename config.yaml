@@ -128,8 +128,8 @@ actions:
         iv_max__eq: 100
         appraised: false
       actions:
-        appraise:
-        # rename: "! Verify"
+        #appraise:
+        rename: "! Verify"
 
     ## Renames luckyegg evo pokemons (except hundos)
     - conditions:
@@ -148,6 +148,12 @@ actions:
         iv_max__lt: 90
       actions:
         rename-prefix: "∞"
+
+    # Renames high iv not hundo
+    - conditions:
+        iv_max__ge: 90
+      actions:
+        rename-calcy:
 
     # For trading (for candy)
     - conditions:
@@ -184,7 +190,7 @@ actions:
     # Renames anything else that doesn't matches any rule above
     #  which, in theory, shouldn't happen, so it adds a prefix to fix the rules
     - actions:
-        rename-calcy:
+        rename: "?TELL_EMI?"
 
 
 
