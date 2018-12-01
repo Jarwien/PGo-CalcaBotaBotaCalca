@@ -56,7 +56,7 @@ actions:
         name__in:
           - Unown
       actions:
-        rename-prefix: "♣ "
+        rename-prefix: "♣"
 
     # Renames babies
     - conditions:
@@ -72,7 +72,7 @@ actions:
           - Wynaut
           - Tyrogue
       actions:
-        rename-prefix: "♥ "
+        rename-prefix: "♥"
 
     # Renames Myth/Quest/Rare/Exclusive/Cool
     - conditions:
@@ -85,7 +85,7 @@ actions:
           - Celebi
           - Mew
       actions:
-        rename-prefix: "♦ "
+        rename-prefix: "♦"
 
     # Legendary/ExRaid/Mythical get renamed with custom prefix
     - conditions:
@@ -140,7 +140,7 @@ actions:
           - Wurmple
           - Caterpie
       actions:
-        rename-prefix: "‰ "
+        rename-prefix: "‰"
 
     # For trading (high cp + low IV)
     - conditions:
@@ -184,7 +184,7 @@ actions:
     # Renames anything else that doesn't matches any rule above
     #  which, in theory, shouldn't happen, so it adds a prefix to fix the rules
     - actions:
-        rename-prefix: "¿ "
+        rename-calcy:
 
 
 

@@ -104,6 +104,7 @@ class PokemonGo(object):
             raise LogcatNotRunningError()
 
         line = await self.logcat_task.stdout.readline()
+        logger.debug(line)
         line = line.decode('utf-8').rstrip()
         #while line.split()[2].decode('utf-8') != self.calcy_pid:
         #    line = await self.logcat_task.stdout.readline()
@@ -134,19 +135,20 @@ class PokemonGo(object):
         await self.run(["adb", "-s", await self.get_device(), "shell", cmd])
 
     async def tap(self, x, y):
-        await self.run(["adb", "-s", await self.get_device(), "shell", "input", "tap", x, y])
+        await self.run(["adb", "-s", await self.get_device(), "shell", "su", "-c", "input", "tap", x, y])
 
     async def key(self, key):
-        await self.run(["adb", "-s", await self.get_device(), "shell", "input", "keyevent", key])
+        await self.run(["adb", "-s", await self.get_device(), "shell", "su", "-c", "input", "keyevent", key])
 
     async def text(self, text):
-        await self.run(["adb", "-s", await self.get_device(), "shell", "input", "text", text])
+        await self.run(["adb", "-s", await self.get_device(), "shell", "su", "-c", "input", "text", text])
 
     async def swipe(self, x1, y1, x2, y2, duration=None):
         args = [
             "adb",
             "-s",
             await self.get_device(),
+            "su", "-c",
             "shell",
             "input",
             "swipe",
