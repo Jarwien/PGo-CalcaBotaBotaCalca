@@ -8,9 +8,8 @@ from colorlog import ColoredFormatter
 
 
 logger = logging.getLogger('PokemonGo')
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
 formatter = ColoredFormatter("  %(log_color)s%(levelname)-8s%(reset)s | %(log_color)s%(message)s%(reset)s")
 ch.setFormatter(formatter)
 logger.addHandler(ch)
@@ -61,7 +60,7 @@ class PokemonGo(object):
         return self.device_id
 
     async def run(self, args):
-        logger.debug("Running %s", args)
+        logger.info("Running %s", args)
         p = subprocess.Popen([str(arg) for arg in args], stdout=subprocess.PIPE)
         stdout, stderr = p.communicate()
         logger.debug("Return code %d", p.returncode)
