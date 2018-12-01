@@ -25,9 +25,8 @@ ops = {
 }
 
 logger = logging.getLogger('ivcheck')
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
 formatter = ColoredFormatter("  %(log_color)s%(levelname)-8s%(reset)s | %(log_color)s%(message)s%(reset)s")
 ch.setFormatter(formatter)
 logger.addHandler(ch)
@@ -53,7 +52,7 @@ class Main:
     async def tap(self, location):
         await self.p.tap(*self.config['locations'][location])
         if location in self.config['waits']:
-            logger.info('Waiting ' + str(self.config['waits'][location]) + ' seconds after ' + str(self.config['waits']) + '...')
+            logger.info('Waiting ' + str(self.config['waits'][location]) + ' seconds after ' + str(self.config['locations'][location]) + '...')
             await asyncio.sleep(self.config['waits'][location])
 
     async def swipe(self, location, duration):
@@ -65,7 +64,7 @@ class Main:
             duration
         )
         if location in self.config['waits']:
-            logger.info('Waiting ' + str(self.config['waits'][location]) + ' seconds after ' + str(self.config['waits']) + '...')
+            logger.info('Waiting ' + str(self.config['waits'][location]) + ' seconds after ' + str(self.config['locations'][location]) + '...')
             await asyncio.sleep(self.config['waits'][location])
 
     async def start(self):
@@ -129,11 +128,16 @@ class Main:
                         await self.swipe('edit_box', 600)
                         await self.tap('paste')
                     else:
-                        await self.p.key(279)  # Paste into rename
+                        await self.p.key('KEYCODE_PASTE')  # Paste into rename
 
                     await self.p.key('KEYCODE_MOVE_HOME')
                     await self.p.send_intent("clipper.set", extra_values=[["text", actions["rename-prefix"]]])
-                    await self.p.key('KEYCODE_PASTE')  # Paste into rename
+
+                    if args.touch_paste:
+                        await self.swipe('edit_box', 600)
+                        await self.tap('paste')
+                    else:
+                        await self.p.key('KEYCODE_PASTE')  # Paste into rename
 
                 # await self.tap('keyboard_ok')  # Instead of yet another tap, use keyevents for reliability
                 await self.p.key('KEYCODE_TAB')
@@ -156,7 +160,7 @@ class Main:
             # Works with most (if not all) of CalcyIV's numeric schemes.
             match = iv_regex.match(unicodedata.normalize('NFKD', clipboard))
             if match:
-                logger.debug('Clipboard matched against ' + str(iv_regex))
+                logger.info('Clipboard matched against ' + str(iv_regex))
                 d = match.groupdict()
                 if "iv" in d:
                     d["iv"] = float(d["iv"])
@@ -288,11 +292,13 @@ class Main:
         values = {}
         while True:
             line = await self.p.read_logcat()
-            if args.verbose:
-                logger.debug("logcat line received: %s", line)
+            if "Received values" in line:
+                logger.info("Pokémon Scanned: %s", line)
+            elif args.verbose:
+                logger.debug("Log Line Received: %s", line)
             match = RE_CALCY_IV.match(line)
             if match:
-                logger.debug("RE_CALCY_IV matched")
+                logger.info("RE_CALCY_IV matched")
                 values = match.groupdict()
                 state = CALCY_SUCCESS
                 if values['cp'] == '-1' or values['level'] == '-1.0':
@@ -306,16 +312,16 @@ class Main:
             match = RE_RED_BAR.match(line)
 
             if match:
-                logger.debug("RE_RED_BAR matched")
+                logger.warning("RE_RED_BAR matched")
                 red_bar = True
 
             match = RE_SCAN_INVALID.match(line)
             if match:
                 if red_bar:
-                    logger.debug("RE_SCAN_INVALID matched and red_bar is True")
+                    logger.warning("RE_SCAN_INVALID matched and red_bar is True")
                     return CALCY_RED_BAR, values
                 else:
-                    logger.debug("RE_SCAN_INVALID matched, raising CalcyIVError")
+                    logger.warning("RE_SCAN_INVALID matched, raising CalcyIVError")
                     return CALCY_SCAN_INVALID, values
 
 

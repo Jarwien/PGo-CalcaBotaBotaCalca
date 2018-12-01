@@ -19,7 +19,7 @@ locations:
 waits:
     next: 0.8
     rename: 0.5
-    rename_ok: 2
+    rename_ok: 1.5
     pokemon_menu_button: 0.6
     appraise_button: 1
     calcy_appraisal_save_button: 3

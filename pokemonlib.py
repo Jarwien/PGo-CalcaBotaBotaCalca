@@ -8,9 +8,8 @@ from colorlog import ColoredFormatter
 
 
 logger = logging.getLogger('PokemonGo')
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
 formatter = ColoredFormatter("  %(log_color)s%(levelname)-8s%(reset)s | %(log_color)s%(message)s%(reset)s")
 ch.setFormatter(formatter)
 logger.addHandler(ch)
@@ -61,7 +60,7 @@ class PokemonGo(object):
         return self.device_id
 
     async def run(self, args):
-        logger.debug("Running %s", args)
+        logger.info("Running %s", args)
         p = subprocess.Popen([str(arg) for arg in args], stdout=subprocess.PIPE)
         stdout, stderr = p.communicate()
         logger.debug("Return code %d", p.returncode)
@@ -76,11 +75,12 @@ class PokemonGo(object):
         return devices
 
     async def start_logcat(self):
-        #return_code, stdout, stderr = await self.run(["adb", "-s", await self.get_device(), "shell", "pidof", "-s", "tesmath.calcy"])
-        #logger.debug("Running pidof calcy got code %d: %s", return_code, stdout)
-        #self.calcy_pid = stdout.decode('utf-8').strip()
+        # return_code, stdout, stderr = await self.run(["adb", "-s", await self.get_device(), "shell", "pidof", "-s", "tesmath.calcy"])
+        # logger.info("Running pidof calcy got code %d: %s", return_code, stdout)
+        # self.calcy_pid = stdout.decode('utf-8').strip()
+        # cmd = ["adb", "-s", await self.get_device(), "logcat", "-T", "1", "-v", "brief", "--pid", self.calcy_pid]
         cmd = ["adb", "-s", await self.get_device(), "logcat", "-T", "1", "-v", "brief"]
-        logger.debug("Starting logcat %s", cmd)
+        logger.info("Starting logcat %s", cmd)
         self.logcat_task = await asyncio.create_subprocess_exec(
             *cmd,
             stdout=asyncio.subprocess.PIPE,
