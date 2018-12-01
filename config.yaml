@@ -1,28 +1,39 @@
 locations:
-    rename: [530, 880]
-    next: [980, 280]
-    keyboard_ok: [933, 1085]
-    rename_ok: [540, 1050]
-    close_calcy_dialog: [880, 1160]
-    edit_box: [90, 1090] # only used with --touch-paste
+    rename: [540, 920]
+    next: [1000, 410]
+    keyboard_ok: [910, 1290]
+    rename_ok: [550, 1130]
+    close_calcy_dialog: [930, 1270]
+    edit_box: [60, 1260] # only used with --touch-paste
     paste: [483, 1092] # only used with --touch-paste
-    favorite_button: [970, 160]
-    favorite_button_box: [960, 142, 1001, 180]
-    pokemon_menu_button: [940, 1700]
-    appraise_button: [940, 1315]
-    continue_appraisal: [540, 1100]
-    calcy_appraisal_save_button: [880, 800]
-    dismiss_calcy: [540, 1170]
-    appraisal_box: [45, 1594, 1032, 1792]
+    favorite_button: [970, 180]
+    favorite_button_box: [950, 135, 970, 150]
+    pokemon_menu_button: [930, 1880]
+    appraise_button: [770, 1480]
+    continue_appraisal: [550, 1180]
+    calcy_appraisal_save_button: [890, 920]
+    dismiss_calcy: [540, 1420]
+    appraisal_box: [80, 1780, 1020, 1970]
 
+# Quick ones (without spoofer)
 waits:
-    next: 0.5
-    rename: 0.7
-    rename_ok: 1.4
+    next: 0.8
+    rename: 0.5
+    rename_ok: 2
     pokemon_menu_button: 0.6
     appraise_button: 1
-    calcy_appraisal_save_button: 5 #4
+    calcy_appraisal_save_button: 3
     continue_appraisal: 0.03
+
+# ## Slow ones
+# waits:
+#     next: 0.9
+#     rename: 1
+#     rename_ok: 2.1
+#     pokemon_menu_button: 1
+#     appraise_button: 1.4
+#     calcy_appraisal_save_button: 7 #4
+#     continue_appraisal: 0.05
 
 blacklist:
     -
@@ -45,22 +56,43 @@ actions:
         name__in:
           - Unown
       actions:
-        rename-prefix: "‽ "
+        rename-prefix: "♣ "
 
-    # Renames Spindas with prefix
+    # Renames babies
     - conditions:
         name__in:
-          - Spinda
+          - Pichu
+          - Togepi
+          - Igglybuff
+          - Cleffa
+          - Elekid
+          - Smoochum
+          - Magby
+          - Budew
+          - Wynaut
+          - Tyrogue
       actions:
-        rename-prefix: "+ "
+        rename-prefix: "♥ "
 
-    # Legendary/ExRaid/Mythical/Good get renamed with custom prefix
+    # Renames Myth/Quest/Rare/Exclusive/Cool
+    - conditions:
+        name__in:
+          - Riolu
+          - Spiritomb
+          - Spinda
+          - Shedinja
+          - Shinx
+          - Celebi
+          - Mew
+      actions:
+        rename-prefix: "♦ "
+
+    # Legendary/ExRaid/Mythical get renamed with custom prefix
     - conditions:
         name__in:
           - Mewtwo
           - Deoxys Normal
           - Giratina Altered
-          - Celebi
           - Articuno
           - Zapdos
           - Moltres
@@ -79,9 +111,10 @@ actions:
           - Groudon
           - Rayquaza
           - Absol
-          - Shedinja
+          - Cresselia
+          - Marowak Alolan
       actions:
-        rename-prefix: "»"
+        rename-prefix: "·"
 
     # Renames hundos before everything else
     - conditions:
@@ -89,44 +122,16 @@ actions:
       actions:
         rename-calcy:
 
-    # # Potential IV0 get appraised or renamed for later verification
-    # - conditions:
-    #     iv:
-    #     iv_min__eq: 0
-    #     appraised: false
-    #   actions:
-    #     appraise:
-    #     rename: "! Verify"
-
     # Potential IV100 get appraised or renamed for later verification
     - conditions:
         iv:
         iv_max__eq: 100
         appraised: false
       actions:
-        # appraise:
-        rename: "! Verify"
+        appraise:
+        # rename: "! Verify"
 
-    # For trading as well, but keeps stats visible because they may come useful in a pinch
-    - conditions:
-        name__in:
-          - Tyranitar
-          - Dragonite
-          - Snorlax
-          - Machamp
-          - Blissey
-          - Shinx
-          - Salamence
-          - Chansey
-          - Golem Normal
-          - Flareon
-          - Vaporeon
-          - Exeggutor
-          - Exeggutor Alolan
-      actions:
-        rename-prefix: "★ "
-
-    # Renames luckyegg evo pokemons (except hundos)
+    ## Renames luckyegg evo pokemons (except hundos)
     - conditions:
         name__in:
           - Pidgey
@@ -137,16 +142,23 @@ actions:
       actions:
         rename-prefix: "‰ "
 
-    # Renames everything between (max) IV95 and 100 with a prefix,
-    # for easily transfering shitty IV95-100 common pokemons afterwards
+    # For trading (high cp + low IV)
     - conditions:
-        iv_max__ge: 95
+        cp__ge: 1600
+        iv_max__lt: 90
       actions:
-        rename-prefix: "∞ "
+        rename-prefix: "∞"
 
-    # For Trading for candy like whatever
+    # For trading (for candy)
     - conditions:
         name__in:
+          - Tyranitar
+          - Dragonite
+          - Snorlax
+          - Machamp
+          - Blissey
+          - Salamence
+          - Chansey
           - Larvitar
           - Pupitar
           - Bagon
@@ -154,19 +166,20 @@ actions:
           - Beldum
           - Metang
           - Ralts
-          - Machop
-          - Machoke
           - Pineco
+          - Shinx
           - Lickitung
           - Slakoth
           - Dratini
+          - Feebas
+          - Mawile
+          - Porygon
       actions:
-        rename-prefix: "• "
+        rename-prefix: "∞"
 
-    # Skips everything else below IV95
+    # Skips everything else below IV90
     - conditions:
-        iv_max__lt: 95
-
+        iv_max__lt: 90
 
     # Renames anything else that doesn't matches any rule above
     #  which, in theory, shouldn't happen, so it adds a prefix to fix the rules
@@ -174,52 +187,7 @@ actions:
         rename-prefix: "¿ "
 
 
+
 iv_regexes:
     - ^.+     (?P<iv>\d+)$
     - ^.+     (?P<iv_min>\d+)\-(?P<iv_max>\d+)$
-
-
-
-###################
-## Sorting Table ##
-###################
-
-## Order in which Pokemon displays pokémons when sorting by A-Z
-# - `꩜ ` (the special @, does not exist on Gboard)
-# - `$`
-# - `%`
-# - `&`
-# - `*`
-# - `@`
-# - `,`
-# - `.`
-# - `?`
-# - `_`
-# - `¡` (alongside `!`)
-# - `¿` (alongside `?`)
-# - `“` (alongside `"`)
-# - `›` (alongside `'`)
-# - `‽` (alongside `?`)
-# - `+`
-# - `⁺` (superscript plus, does not exist on Gboard)
-# - `»` (alongside `"`)
-# - `÷`
-# - `×`
-# - `∅` (alingside `0`)
-# - `≈` (alongside `=`)
-# - `↑` (alingside `^`)
-# - `→` (alingside `^`)
-# - `↓` (alingside `^`)
-# - `←` (alingside `^`)
-# - `·` (alongside `-`)
-# - `†` (alongside `*`)
-# - `‡` (alongside `*`)
-# - `•`
-# - `★` (alongside `*`)
-# - `♠` (alongside `•`)
-# - `♦` (alongside `•`)
-# - `♣` (alongside `•`)
-# - `♥` (alongside `•`)
-# - `✓`
-# - `‰`
-# - `∞` (alongside `=`)
