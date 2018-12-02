@@ -105,7 +105,10 @@ class PokemonGo(object):
 
         line = await self.logcat_task.stdout.readline()
         logger.debug(line)
-        line = line.decode('utf-8').rstrip()
+        try:
+            line = line.decode('utf-8').rstrip()
+        except Exception as e:
+            logger.warning('THE WEIRD ERROE: ' + e)
         #while line.split()[2].decode('utf-8') != self.calcy_pid:
         #    line = await self.logcat_task.stdout.readline()
         #logger.debug("Received logcat line: %s", line)
