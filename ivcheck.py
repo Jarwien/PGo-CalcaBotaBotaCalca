@@ -70,12 +70,18 @@ class Main:
 
     async def start(self):
         self.p = PokemonGo()
+        step = None
+        steps = 0
         await self.p.set_device(self.args.device_id)
         await self.p.start_logcat()
         num_errors = 0
         while True:
             blacklist = False
-            state, values = await self.check_pokemon()
+            if step is None or step == 1:
+                step = 1
+                state, values = await self.check_pokemon()
+
+            logger.info("this is step " + str(step) + "from a total of " + str(steps))
 
             if "name" in values and values["name"] in self.config["blacklist"]:
                 blacklist = True
@@ -93,6 +99,8 @@ class Main:
             values["blacklist"] = blacklist
             values["appraised"] = False
             actions = await self.get_actions(values)
+            steps = len(actions)
+
             if "appraise" in actions:
                 await self.tap("pokemon_menu_button")
                 await self.tap("appraise_button")
@@ -106,11 +114,14 @@ class Main:
                 actions = await self.get_actions(values)
                 await self.tap("dismiss_calcy")
 
-            if "rename" in actions or "rename-calcy" in actions or "rename-prefix" in actions:
+            if "rename" or "rename-calcy" or "rename-prefix" or "reset-name" or "add-prefix" in actions:
                 if values["success"] is False:
                     await self.tap('close_calcy_dialog')  # it gets in the way
                 await self.tap('rename')
-                if "rename-calcy" in actions:
+                if "reset-name" in actions and step == 1:
+                    await self.p.key("KEYCODE_MOVE_END")
+                    await self.p.key('--longpress ' + 'KEYCODE_DEL ' * 12)
+                elif "rename-calcy" in actions:
                     if args.touch_paste:
                         await self.swipe('edit_box', 600)
                         await self.tap('paste')
@@ -139,15 +150,27 @@ class Main:
                         await self.tap('paste')
                     else:
                         await self.p.key('KEYCODE_PASTE')  # Paste into rename
+                elif "add-prefix" in actions:
+                    await self.p.key('KEYCODE_MOVE_HOME')
+                    await self.p.send_intent("clipper.set", extra_values=[["text", actions["add-prefix"]]])
+                    await self.p.key('KEYCODE_PASTE')  # Paste into rename
+
 
                 # await self.tap('keyboard_ok')  # Instead of yet another tap, use keyevents for reliability
                 await self.p.key('KEYCODE_TAB')
                 await self.p.key('KEYCODE_ENTER')
                 await self.tap('rename_ok')
+
             if "favorite" in actions:
                 if not await self.check_favorite():
                     await self.tap('favorite_button')
-            await self.tap('next')
+
+            if step >= steps:
+                step = 1
+                await self.tap('next')
+                continue
+            else:
+                step = step + 1
 
 
     async def get_data_from_clipboard(self):
