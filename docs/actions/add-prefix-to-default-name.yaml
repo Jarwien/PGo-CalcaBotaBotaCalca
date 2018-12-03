@@ -1,0 +1,10 @@
+# It'll rename every pokemon (failed or not, doesn't matter) to it's original Pokémon® name
+# and afterwards add a custom prefix at the beggining.
+
+# This is very useful for using for shinies, for example, if you don't want IV's and other
+# ugly stuff messing up your colorful pokémons :D
+
+actions:
+    - actions:
+        reset-name: # Renames every pokemon as it's original name first.
+        add-prefix: "★ " # Afterwards, adds a custom prefix, keeping the pokemon's name intact.
