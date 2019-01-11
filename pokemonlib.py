@@ -10,6 +10,7 @@ from colorlog import ColoredFormatter
 logger = logging.getLogger('PokemonGo')
 logger.setLevel(logging.INFO)
 ch = logging.StreamHandler()
+ch.setLevel(logging.INFO)
 formatter = ColoredFormatter("  %(log_color)s%(levelname)-8s%(reset)s | %(log_color)s%(message)s%(reset)s")
 ch.setFormatter(formatter)
 logger.addHandler(ch)
@@ -17,15 +18,23 @@ logger.addHandler(ch)
 RE_CLIPBOARD_TEXT = re.compile("^./ClipboardReceiver\(\s*\d+\): Clipboard text: (.+)$")
 
 class CalcyIVError(Exception):
+    # logger.error('CalcyIV did not find any combinations.')
     pass
 
 class RedBarError(Exception):
+    # logger.error('The red bar is covering the pokémon CP.')
     pass
 
 class PhoneNotConnectedError(Exception):
+    # logger.error('Your phone does not appear to be connected. Try \'adb devices\' and see if it is listed there :)')
     pass
 
 class LogcatNotRunningError(Exception):
+    # logger.error('For some reason, I can\'t run the logcat on your phone! :( Try to run \'adb logcat\' and see if something happens. Message the developers as well!')
+    pass
+
+class RegexDidNotMatch(Exception):
+    # logger.error('I cant find the IVs of your pokemon! Check the "iv_regexes" section on config.yaml.\nIf this is an intermitent error, try passing the \'--regexp-skip\' argument to ivcheck.py')
     pass
 
 class PokemonGo(object):
@@ -69,6 +78,7 @@ class PokemonGo(object):
     async def get_devices(self):
         code, stdout, stderr = await self.run(["adb", "devices"])
         devices = []
+
         for line in stdout.decode('utf-8').splitlines()[1:-1]:
             device_id, name = line.split('\t')
             devices.append(device_id)
@@ -104,11 +114,7 @@ class PokemonGo(object):
             raise LogcatNotRunningError()
 
         line = await self.logcat_task.stdout.readline()
-        logger.debug(line)
-        try:
-            line = line.decode('utf-8').rstrip()
-        except Exception as e:
-            logger.warning('THE WEIRD ERROE: ' + e)
+        line = line.decode('utf-8', errors='ignore').rstrip()
         #while line.split()[2].decode('utf-8') != self.calcy_pid:
         #    line = await self.logcat_task.stdout.readline()
         #logger.debug("Received logcat line: %s", line)

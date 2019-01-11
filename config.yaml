@@ -26,14 +26,14 @@ waits:
     continue_appraisal: 0.03
 
 # ## Slow ones
-# waits:
-#     next: 0.9
-#     rename: 1
-#     rename_ok: 2.1
-#     pokemon_menu_button: 1
-#     appraise_button: 1.4
-#     calcy_appraisal_save_button: 7 #4
-#     continue_appraisal: 0.05
+waits:
+    next: 1.1
+    rename: 1
+    rename_ok: 2.1
+    pokemon_menu_button: 1
+    appraise_button: 1.4
+    calcy_appraisal_save_button: 7 #4
+    continue_appraisal: 0.05
 
 blacklist:
     -
@@ -56,7 +56,7 @@ actions:
         name__in:
           - Unown
       actions:
-        rename-prefix: "♣"
+        rename: "♣ {calcy}"
 
     # Renames babies
     - conditions:
@@ -71,8 +71,11 @@ actions:
           - Budew
           - Wynaut
           - Tyrogue
+          - Meltan
+          - Azurill
+          - Munchlax
       actions:
-        rename-prefix: "♥"
+        rename: "♥ {name}" #{iv}"
 
     # Renames Myth/Quest/Rare/Exclusive/Cool
     - conditions:
@@ -85,13 +88,16 @@ actions:
           - Celebi
           - Mew
       actions:
-        rename-prefix: "♦"
+        rename: "♦ {calcy}"
 
     # Legendary/ExRaid/Mythical get renamed with custom prefix
     - conditions:
         name__in:
           - Mewtwo
           - Deoxys Normal
+          - Deoxys Attack
+          - Deoxys Defense
+          - Deoxys Speed
           - Giratina Altered
           - Articuno
           - Zapdos
@@ -113,8 +119,9 @@ actions:
           - Absol
           - Cresselia
           - Marowak Alolan
+          - Heltran
       actions:
-        rename-prefix: "·"
+        rename: "·{calcy}"
 
     # Renames hundos before everything else
     - conditions:
@@ -124,11 +131,10 @@ actions:
 
     # Potential IV100 get appraised or renamed for later verification
     - conditions:
-        iv:
         iv_max__eq: 100
         appraised: false
       actions:
-        #appraise:
+        # appraise:
         rename: "! Verify"
 
     ## Renames luckyegg evo pokemons (except hundos)
@@ -140,20 +146,14 @@ actions:
           - Wurmple
           - Caterpie
       actions:
-        rename-prefix: "‰"
+        rename: "∞ {calcy}"
 
     # For trading (high cp + low IV)
     - conditions:
-        cp__ge: 1600
-        iv_max__lt: 90
+        cp__ge: 2000
+        iv_max__lt: 95
       actions:
-        rename-prefix: "∞"
-
-    # Renames high iv not hundo
-    - conditions:
-        iv_max__ge: 90
-      actions:
-        rename-calcy:
+        rename: "‰ {calcy}"
 
     # For trading (for candy)
     - conditions:
@@ -178,10 +178,14 @@ actions:
           - Slakoth
           - Dratini
           - Feebas
-          - Mawile
           - Porygon
+          - Croagunk
+          - Skorupi
+          - Finneon
+          - Bronzor
+          - Lapras
       actions:
-        rename-prefix: "∞"
+        rename: "• {calcy}"
 
     # Skips everything else below IV90
     - conditions:
@@ -190,7 +194,7 @@ actions:
     # Renames anything else that doesn't matches any rule above
     #  which, in theory, shouldn't happen, so it adds a prefix to fix the rules
     - actions:
-        rename: "?TELL_EMI?"
+        rename: "¿ {calcy}"
 
 
 
