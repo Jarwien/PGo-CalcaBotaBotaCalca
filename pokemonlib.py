@@ -141,7 +141,7 @@ class PokemonGo(object):
             else:
                 cmd = cmd + " -e {} '{}'".format(key, value)
         logger.info("Sending intent: " + cmd)
-        await self.run(["adb", "-s", await self.get_device(), "shell", cmd])
+        await self.run(["adb", "-s", await self.get_device(), "shell", "su", "-c", cmd])
 
     async def tap(self, x, y):
         await self.run(["adb", "-s", await self.get_device(), "shell", "su", "-c", "input", "tap", x, y])
