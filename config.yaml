@@ -199,5 +199,5 @@ actions:
 
 
 iv_regexes:
-    - ^.+     (?P<iv>\d+)$
-    - ^.+     (?P<iv_min>\d+)\-(?P<iv_max>\d+)$
+    - ^.+ +--(?P<iv>\d+)$
+    - ^.+ +--(?P<iv_min>\d+)\-(?P<iv_max>\d+)$
