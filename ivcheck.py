@@ -172,12 +172,14 @@ class Main:
                 d = match.groupdict()
                 if "iv" in d:
                     d["iv"] = float(d["iv"])
+                    d["iv_avg"] = int(d["iv"])
                     d["iv_min"] = d["iv"]
                     d["iv_max"] = d["iv"]
                 else:
                     for key in ["iv_min", "iv_max"]:
                         if key in d:
                             d[key] = float(d[key])
+                    d["iv_avg"] = int((d['iv_max'] + d['iv_min']) / 2)  # funnyly averages iv_max and iv_min into an integer
                     d["iv"] = None
                 return clipboard, d
 
