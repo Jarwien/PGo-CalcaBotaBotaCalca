@@ -1,0 +1,11 @@
+# Failed scans get renamed for later verification
+- conditions:
+    success: false
+  actions:
+    rename: "!Failed"
+
+# Successful scans get renamed via Calcy
+- conditions:
+    success: true
+  actions:
+    rename-calcy:

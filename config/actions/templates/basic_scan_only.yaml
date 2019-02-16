@@ -1,0 +1,10 @@
+## Populates calcy without renaming
+# Failed scans get renamed for later verification
+- conditions:
+    success: false
+  actions:
+    rename: "!ManualCheck"
+
+# Successful scans get renamed via Calcy
+- conditions:
+    success: true

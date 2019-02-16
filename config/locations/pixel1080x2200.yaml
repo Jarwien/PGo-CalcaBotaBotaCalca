@@ -1,0 +1,19 @@
+## locations for 1080x2400
+# use a lucky nonevolved poke to calibrate calcy
+# and make sure it grabs the moves
+
+rename: [530, 880]
+next: [980, 280]
+keyboard_ok: [933, 1085]
+rename_ok: [540, 1050]
+close_calcy_dialog: [925, 1085]
+edit_box: [90, 1090] # only used with --touch-paste
+paste: [483, 1092] # only used with --touch-paste
+favorite_button: [970, 160]
+favorite_button_box: [960, 142, 1001, 180]
+pokemon_menu_button: [940, 1700]
+appraise_button: [940, 1315]
+continue_appraisal: [540, 1100]
+calcy_appraisal_save_button: [870, 870]
+dismiss_calcy: [540, 1170]
+appraisal_box: [45, 1594, 1032, 1792]
