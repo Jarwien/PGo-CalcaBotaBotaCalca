@@ -7,10 +7,9 @@
   actions:
     rename: "! Verify"
 
-# For any potential IV greater than 80 appraise it, without renaming yet.
+# Appraise everyhing that's not appraised yet
 - conditions:
     iv:
-    iv_max__ge: 80
     appraised: false
   actions:
     appraise:
