@@ -103,5 +103,3 @@ ENV/
 # vscode stuff
 .vscode/
 
-
-config*.yaml

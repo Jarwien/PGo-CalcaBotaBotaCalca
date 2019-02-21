@@ -1,6 +1,6 @@
-## locations for 1080x2400
-# use a lucky nonevolved poke to calibrate calcy
-# and make sure it grabs the moves
+## Locations for Google Pixel 1080x2400
+# Use a nonevolved non-lucky poke (with three buttons) to calibrate calcy
+# Check that it's working properly and it grabs the moves on lucky evolved pokemons
 
 rename: [530, 880]
 next: [980, 280]

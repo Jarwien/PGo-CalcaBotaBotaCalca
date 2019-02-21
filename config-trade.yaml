@@ -1,0 +1,13 @@
+locations:
+  !include config/locations/redminote1080x2400.yaml
+
+waits:
+  !include config/waits/redminote1080x2400.yaml
+
+blacklist:
+  -
+  #disabled because of https://github.com/Azelphur/PokemonGo-CalcyIV-Renamer/issues/47
+  #!include config/blacklist.yaml
+
+actions:
+  !include config/actions/emi_trade.yaml
