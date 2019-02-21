@@ -13,7 +13,6 @@
 # We want them close to the beginning so to check them out manually afterwards,
 # as each legacy can belong to any other group, and once we match one condition
 # we skip the rest.
-# (Unfortunately the 'favorite:' action does not work when using custom resolutions, yet)
 - conditions:
     legacy: true
   actions:
@@ -44,13 +43,13 @@
 - conditions:
     name__in: !include ../pokemons/babies.yaml
   actions:
-    rename: "♥{iv_avg}{name}"
+    rename: "♥{name}{iv_avg}"
 
 # Renames random rare & bizarre stuff and those "one-time only" pokémons
 - conditions:
     name__in: !include ../pokemons/rares.yaml
   actions:
-    rename: "♦{iv_avg}{name}"
+    rename: "♦{name}{iv_avg}"
 
 # GOOD Legendary/ExRaid get renamed with custom prefix
 - conditions:
@@ -75,7 +74,6 @@
     iv_max__eq: 100
     appraised: false
   actions:
-    # rename: "!Verify"
     appraise:
 
 # Guaranteed hundos get renamed normally
