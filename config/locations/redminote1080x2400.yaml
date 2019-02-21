@@ -3,17 +3,14 @@
 # Check that it's working properly and it grabs the moves on lucky evolved pokemons
 
 rename: [540, 920]
-next: [1000, 410]
-keyboard_ok: [960, 1430]
-rename_ok: [550, 1170]
-close_calcy_dialog: [930, 1415]
-edit_box: [80, 1430] # only used with --touch-paste
-paste: [750, 1570] # only used with --touch-paste
-favorite_button: [970, 160]
-favorite_button_box: [970, 140, 1000, 180]
-pokemon_menu_button: [930, 2020]
-appraise_button: [940, 1620]
-continue_appraisal: [550, 2020]
+next: [1000, 500]
+rename_ok: [550, 1290]
+close_calcy_dialog: [930, 1640]
+favorite_button: [970, 185]
+favorite_button_box: [960, 175, 980, 195]
+pokemon_menu_button: [930, 2240]
+appraise_button: [930, 1865]
+continue_appraisal: [540, 2260]
 calcy_appraisal_save_button: [890, 935]
-dismiss_calcy: [540, 1600]
-appraisal_box: [70, 1920, 1020, 2090]
+dismiss_calcy: [540, 2260]
+appraisal_box: [70, 2170, 1020, 2340]
