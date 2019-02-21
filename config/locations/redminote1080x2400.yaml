@@ -1,0 +1,19 @@
+## Locations for Xiaomi Redmi Note 5 1080x2400
+# Use a nonevolved non-lucky poke (with three buttons) to calibrate calcy
+# Check that it's working properly and it grabs the moves on lucky evolved pokemons
+
+rename: [540, 920]
+next: [1000, 410]
+keyboard_ok: [960, 1430]
+rename_ok: [550, 1170]
+close_calcy_dialog: [930, 1415]
+edit_box: [80, 1430] # only used with --touch-paste
+paste: [750, 1570] # only used with --touch-paste
+favorite_button: [970, 160]
+favorite_button_box: [970, 140, 1000, 180]
+pokemon_menu_button: [930, 2020]
+appraise_button: [940, 1620]
+continue_appraisal: [550, 2020]
+calcy_appraisal_save_button: [890, 935]
+dismiss_calcy: [540, 1600]
+appraisal_box: [70, 1920, 1020, 2090]
