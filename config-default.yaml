@@ -2,7 +2,7 @@ locations:
   !include config/locations/redminote1080x2400.yaml
 
 waits:
-  !include config/waits/redminote1080x2400.yaml
+  !include config/waits/redminote.yaml
 
 blacklist:
   -
