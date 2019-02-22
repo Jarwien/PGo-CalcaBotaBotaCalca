@@ -1,0 +1,40 @@
+## How to use:
+# 1. Set calcy as: 'The $IV_AVG$'
+# 2. Search for 'unown'
+# 3. Run this script.
+
+# Nobrainer:
+- conditions:
+    success: false
+  actions:
+    rename: "! Verify"
+
+# Appraise everyhing that's not appraised yet
+- conditions:
+    iv:
+    appraised: false
+  actions:
+    appraise:
+
+## Renames Unowns with prefix and 'The' so you can
+## rename it quickly later to change the IV for the
+## proper unown letter it is (keep a table handy, lol)
+- conditions:
+    name__in:
+      - Unown
+    appraised: false
+    iv:
+  actions:
+    appraise:
+- conditions:
+    name__in:
+      - Unown
+  actions:
+    rename: "♦ {calcy}"
+
+# This renames anything else that doesn't match any rule above
+# which, in theory, shouldn't happen. So if you see a pokemon with
+# this character you know you have a mistake on this file and most
+# likely missed something.
+- actions:
+    rename: "¿ {calcy}"

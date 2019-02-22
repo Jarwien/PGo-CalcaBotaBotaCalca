@@ -10,4 +10,4 @@ blacklist:
   #!include config/blacklist.yaml
 
 actions:
-  !include config/actions/emi_default.yaml
+  !include config/actions/emi_prettify.yaml
