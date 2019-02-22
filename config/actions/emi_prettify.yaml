@@ -1,0 +1,50 @@
+## How to use:
+# 1. Set calcy as: 'Name-Short''IV%Avg' ($NaAb$$IV%Avg$)
+# 2. Make a search string with:
+#     - shiny
+#     - All pokemons in babies.yaml
+#     - All pokemons in rares.yaml
+#    (Tip: use 151 in place of Mew to get rid of Mewtwos)
+#    Last String was made on 21 feb:
+#     shiny,Spiritomb,Spinda,Shedinja,Celebi,151,Meltan,Pichu,Togepi,Igglybuff,Cleffa,Elekid,Smoochum,Magby,Budew,Wynaut,Tyrogue,Azurill,Munchlax,Riolu,Shinx,Mantyke,Chingling,Happiny
+# 3. Run the renamer with this config
+
+# Nobrainer:
+- conditions:
+    success: false
+  actions:
+    rename: "! Verify"
+
+# Appraise everyhing that's not appraised yet
+- conditions:
+    iv:
+    appraised: false
+  actions:
+    appraise:
+
+## Renames babies with hearts ...
+##    .... because babies.
+- conditions:
+    name__in: !include ../pokemons/babies.yaml
+  actions:
+    rename: "♥ {calcy}"
+
+## Renames random rare & bizarre stuff and
+## those "one-time only" pokémons
+- conditions:
+    name__in: !include ../pokemons/rares.yaml
+  actions:
+    rename: "♣ {calcy}"
+
+
+## From now on, everything else are shinies
+## so add a star to all of them.
+# Legacy movesets
+- conditions:
+    legacy: true
+  actions:
+    favorite:
+    rename: '★ {calcy}'
+# Everything else
+- actions:
+    rename: "★ {calcy}"

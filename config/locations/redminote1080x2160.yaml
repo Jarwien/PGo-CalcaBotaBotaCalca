@@ -4,11 +4,8 @@
 
 rename: [540, 920]
 next: [1000, 410]
-keyboard_ok: [960, 1430]
 rename_ok: [550, 1170]
 close_calcy_dialog: [930, 1415]
-edit_box: [80, 1430] # only used with --touch-paste
-paste: [750, 1570] # only used with --touch-paste
 favorite_button: [970, 160]
 favorite_button_box: [970, 140, 1000, 180]
 pokemon_menu_button: [930, 2020]

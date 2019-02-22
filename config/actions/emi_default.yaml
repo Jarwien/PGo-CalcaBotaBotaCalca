@@ -10,72 +10,114 @@
 ##############
 ## LEGACIES ##
 ##############
-# We want them close to the beginning so to check them out manually afterwards,
-# as each legacy can belong to any other group, and once we match one condition
-# we skip the rest.
+# We want them close to the beginning so to manually check them
+# out afterwards, as each legacy can belong to any other group.
+- conditions:
+    legacy: true
+    appraised: false
+    iv:
+  actions:
+    appraise:
 - conditions:
     legacy: true
   actions:
     favorite:
-    rename: "»{calcy}"
+    rename: '!{calcy}'
 
 
 ##############
 ## SPECIFIC ##
 ##############
-# Renames Unowns with prefix and 'The' so you can
-# rename it quickly later to change the IV for the
-# proper unown letter it is (keep a table handy, lol)
+## Renames Unowns with prefix and 'The' so you can
+## rename it quickly later to change the IV for the
+## proper unown letter it is (keep a table handy, lol)
+- conditions:
+    name__in:
+      - Unown
+    appraised: false
+    iv:
+  actions:
+    appraise:
 - conditions:
     name__in:
       - Unown
   actions:
-    rename: "∅ The {iv_avg}"
+    rename: "♦ The {iv_avg}"
 
-# Renames luckies with custom prefix
+
+## Appraises luckies
 - conditions:
     lucky: true
+    iv:
+    appraised: false
   actions:
-    rename: "★{calcy}"
+    appraise:
 
-# Renames babies with hearts ...
-#    .... because babies.
+
+## Renames babies with hearts ...
+##    .... because babies.
+- conditions:
+    iv:
+    iv_max__gt: 90
+    appraised: false
+    name__in: !include ../pokemons/babies.yaml
+  actions:
+    appraise:
 - conditions:
     name__in: !include ../pokemons/babies.yaml
   actions:
     rename: "♥{name}{iv_avg}"
 
-# Renames random rare & bizarre stuff and those "one-time only" pokémons
+
+## Renames random rare & bizarre stuff and
+## those "one-time only" pokémons
+- conditions:
+    iv:
+    appraised: false
+    name__in: !include ../pokemons/rares.yaml
+  actions:
+    appraise:
 - conditions:
     name__in: !include ../pokemons/rares.yaml
   actions:
-    rename: "♦{name}{iv_avg}"
+    rename: "♣{name}{iv_avg}"
 
-# GOOD Legendary/ExRaid get renamed with custom prefix
+
+## Legendaries and stuff
+- conditions:
+    iv:
+    iv_max__gt: 90
+    name__in: !include ../pokemons/legendaries.yaml
+    appraised: false
+  actions:
+    appraise:
 - conditions:
     name__in: !include ../pokemons/legendaries.yaml
     iv_max__gt: 90
   actions:
-    rename: "×{calcy}"
-
-# The rest of them (IV <90), gets renamed without prefix
+    rename: "•{calcy}" # Good ones get custom prefix
 - conditions:
     name__in: !include ../pokemons/legendaries.yaml
   actions:
-    rename: "{calcy}"
+    rename: "{calcy}"  # The rest of them (IV <90), gets renamed without prefix
 
 
 ##############
 ### HUNDOS ###
 ##############
-# Possible IV100 get renamed for later verification
+# Check possible IV100
 - conditions:
     iv:
     iv_max__eq: 100
     appraised: false
   actions:
     appraise:
-
+# If even after appraisal is not clear, rename for manual check:
+- conditions:
+    iv_max__eq: 100
+    appraised: true
+  actions:
+    rename: "!{calcy}"
 # Guaranteed hundos get renamed normally
 - conditions:
     iv__eq: 100
@@ -161,8 +203,8 @@
     iv_max__lt: 95
 
 # This renames anything else that doesn't match any rule above
-# which, in theory, shouldn't happen. So it you se a pokemon with
-# that character you know you have a mistake on this file and probably
-# missed something.
+# which, in theory, shouldn't happen. So if you see a pokemon with
+# this character you know you have a mistake on this file and most
+# likely missed something.
 - actions:
     rename: "¿ {calcy}"
