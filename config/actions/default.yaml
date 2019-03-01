@@ -28,21 +28,12 @@
 ##############
 ## SPECIFIC ##
 ##############
-## Renames Unowns with prefix and 'The' so you can
-## rename it quickly later to change the IV for the
-## proper unown letter it is (keep a table handy, lol)
-- conditions:
-    name__in:
-      - Unown
-    appraised: false
-    iv:
-  actions:
-    appraise:
+## Renames unowns to be renamed afterwards with emi_unowns.yaml
 - conditions:
     name__in:
       - Unown
   actions:
-    rename: "♦ The {iv_avg}"
+    rename: "* The {iv_avg}"
 
 
 ## Appraises luckies
@@ -54,33 +45,19 @@
     appraise:
 
 
-## Renames babies with hearts ...
-##    .... because babies.
-- conditions:
-    iv:
-    iv_max__gt: 90
-    appraised: false
-    name__in: !include ../pokemons/babies.yaml
-  actions:
-    appraise:
+## Renames babies to be renamed afterwards with emi_prettify.yaml
 - conditions:
     name__in: !include ../pokemons/babies.yaml
   actions:
-    rename: "♥{name}{iv_avg}"
+    rename: "*{name}{iv_avg}"
 
 
-## Renames random rare & bizarre stuff and
-## those "one-time only" pokémons
-- conditions:
-    iv:
-    appraised: false
-    name__in: !include ../pokemons/rares.yaml
-  actions:
-    appraise:
+## Renames random rare & bizarre stuff and those "one-time only"
+## pokémons to be renamed afterwards with emi_prettify.yaml
 - conditions:
     name__in: !include ../pokemons/rares.yaml
   actions:
-    rename: "♣{name}{iv_avg}"
+    rename: "*{name}{iv_avg}"
 
 
 ## Legendaries and stuff
@@ -150,7 +127,7 @@
 
 # This one is for trading metarelevants with low level and any IV
 - conditions:
-    level__lt: 32
+    level__lt: 30
     name__in: !include ../pokemons/metarelevant.yaml
   actions:
     rename: "Ω{iv_avg} TRADE {level}"
@@ -173,15 +150,16 @@
 ###########################
 ### FOR MANUAL CHECKING ###
 ###########################
-# This one is for pokes which didn't match any of the three conditions below.
-# For example, a IV93 LVL 12 Tyranitar wouldn't fit any of the rules below,
+# Not true anymore:
+# This one is for pokes which didn't match any of the three conditions above.
+# For example, a IV93 LVL 12 Tyranitar wouldn't fit any of the rules above,
 # So without this block it would get lost (oh you poor little monster) and
 # would end on the last action, which as you'll see, we're trying to avoid :P
-- conditions:
-    name__in: !include ../pokemons/metarelevant.yaml
-  actions:
-    rename: "∞{calcy}"  # This symbol means "I've no idea what to do with it,
-                        #   gotta check afterwards."
+# - conditions:
+#     name__in: !include ../pokemons/metarelevant.yaml
+#   actions:
+#     rename: "∞{calcy}"  # This symbol means "I've no idea what to do with it,
+#                         #   gotta check afterwards."
 
 # Renames everything else with IV 95-100 with a prefix,
 # so we can quickly check out if there's actually something worth it
