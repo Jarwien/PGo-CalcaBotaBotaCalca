@@ -1,0 +1,168 @@
+##########
+## FAIL ##
+##########
+- conditions:
+    success: false
+  actions:
+    rename: "!Failed"
+
+
+##############
+## LEGACIES ##
+##############
+# We want them close to the beginning so to check them out manually afterwards,
+# as each legacy can belong to any other group, and once we match one condition
+# we skip the rest.
+- conditions:
+    legacy: true
+  actions:
+    favorite:
+    rename: "»{calcy}"
+
+
+##############
+## SPECIFIC ##
+##############
+# Renames Unowns with prefix and 'The' so you can
+# rename it quickly later to change the IV for the
+# proper unown letter it is (keep a table handy, lol)
+- conditions:
+    name__in:
+      - Unown
+  actions:
+    rename: "∅ The {iv_avg}"
+
+# Renames luckies with custom prefix
+- conditions:
+    lucky: true
+  actions:
+    rename: "★{calcy}"
+
+# Renames babies with hearts ...
+#    .... because babies.
+- conditions:
+    name__in: !include ../pokemons/babies.yaml
+  actions:
+    rename: "♥{name}{iv_avg}"
+
+# Renames random rare & bizarre stuff and those "one-time only" pokémons
+- conditions:
+    name__in: !include ../pokemons/rares.yaml
+  actions:
+    rename: "♦{name}{iv_avg}"
+
+# GOOD Legendary/ExRaid get renamed with custom prefix
+- conditions:
+    name__in: !include ../pokemons/legendaries.yaml
+    iv_max__gt: 90
+  actions:
+    rename: "×{calcy}"
+
+# The rest of them (IV <90), gets renamed without prefix
+- conditions:
+    name__in: !include ../pokemons/legendaries.yaml
+  actions:
+    rename: "{calcy}"
+
+
+##############
+### HUNDOS ###
+##############
+# Possible IV100 get renamed for later verification
+- conditions:
+    iv:
+    iv_max__eq: 100
+    appraised: false
+  actions:
+    appraise:
+
+# Guaranteed hundos get renamed normally
+- conditions:
+    iv__eq: 100
+  actions:
+    rename: "{calcy}"
+
+
+#####################
+### META RELEVANT ###
+#####################
+# Meta-relevant high LVL AND highish IV get renamed normally
+# Every other meta-relevant combination (low LVL OR low IV),
+# we'll trade it below
+- conditions:
+    iv_max__ge: 90
+    level__ge: 30
+    name__in: !include ../pokemons/metarelevant.yaml
+  actions:
+    rename: "{calcy}"
+
+
+##############
+### TRADES ###
+##############
+# Renames pokemons to trade for candies
+- conditions:
+    name__in: !include ../pokemons/trade_candy.yaml
+  actions:
+    rename: "π{iv_avg} TRADE {level}"
+
+# This one is for trading metarelevants with low level and any IV
+- conditions:
+    level__lt: 32
+    name__in: !include ../pokemons/metarelevant.yaml
+  actions:
+    rename: "Ω{iv_avg} TRADE {level}"
+
+# This one is for trading metarelevants with low IV and any LVL
+- conditions:
+    iv_max__lt: 90
+    name__in: !include ../pokemons/metarelevant.yaml
+  actions:
+    rename: "Ω{iv_avg} TRADE {level}"
+
+# We can also trade anything high level + hich CP, maybe we get Lucky (ha)
+- conditions:
+    level__ge: 30
+    cp__ge: 2300
+  actions:
+    rename: "Ω{iv_avg} TRADE {level}"
+
+
+###########################
+### FOR MANUAL CHECKING ###
+###########################
+# This one is for pokes which didn't match any of the three conditions below.
+# For example, a IV93 LVL 12 Tyranitar wouldn't fit any of the rules below,
+# So without this block it would get lost (oh you poor little monster) and
+# would end on the last action, which as you'll see, we're trying to avoid :P
+- conditions:
+    name__in: !include ../pokemons/metarelevant.yaml
+  actions:
+    rename: "∞{calcy}"  # This symbol means "I've no idea what to do with it,
+                        #   gotta check afterwards."
+
+# Renames everything else with IV 95-100 with a prefix,
+# so we can quickly check out if there's actually something worth it
+# and transfer shitty useless common pokemons afterwards. in theory
+# all worth it 95+ pokemons would have been caught on the previous
+# conditions. It's the same idea from the wildcard condition below.
+- conditions:
+    iv_max__ge: 95
+  actions:
+    rename: "∞{calcy}"
+
+
+#######################
+### SKIPS AND TRASH ###
+#######################
+# Everything else below IV95 we're skipping (that's why there's no
+# action: block in here.
+- conditions:
+    iv_max__lt: 95
+
+# This renames anything else that doesn't match any rule above
+# which, in theory, shouldn't happen. So it you se a pokemon with
+# that character you know you have a mistake on this file and probably
+# missed something.
+- actions:
+    rename: "¿ {calcy}"
