@@ -21,9 +21,10 @@ This script essentially blindly sends touch events to your phone. If a popup app
 
    • _Windows users can go [here](https://www.python.org/downloads/windows/) and select [Download Windows x86-64 executable installer](https://www.python.org/ftp/python/3.7.3/python-3.7.3-amd64.exe) under **Stable Releases**._
 5. Now, open a terminal in the repository directory you unzipped in step 1. 
-
    • _Windows users can [open a command prompt inside the folder](https://www.google.com/search?q=open+a+command+prompt+in+a+folder "In File Explorer, press and hold the Shift key, then right click or press and hold on a folder or drive that you want to open the command prompt at that location for, and click/tap on Open Command Prompt Here option.") (hover the link for TL;DR)._
-6. Run `pip install -r requirements.txt` to install the required libraries for the script to work.
+   
+6. Check if you have installed Python 3.7 `python -v` returns Python 3.7.x    
+7. Run `pip install -r requirements.txt` to install the required libraries for the script to work.
 
 ### Configuration
 
@@ -79,6 +80,7 @@ Rulesets allow you to define new ways of renaming your pokémon, outside of the 
 
 - **blacklist**: Whether the pokémon is in the blacklist `[true / false]`.
 - **appraised**: Whether the pokémon has been appraised or not `[true / false]`.
+- **lucky**: Whether the pokémon is lucky `[true / false]`.
 - **id**: The pokémon pokedex ID.
 - **cp**: The pokémon CP.
 - **max_hp**: The pokémon max hp.
@@ -209,3 +211,16 @@ _Conditions also support the following operators:_
 5. I don't quite get the `--copy-calcy` _thingamabove_...
 
     ![](docs/tutorial_spaces.gif?raw=true)
+    
+6. Can i run a diffrent config.yaml file? 
+
+    Yes you can, make sure the .yaml file is in the same directory as the config.yaml 
+    Run the command `python ivcheck.py --config YOUROWNCONFIG.yaml`
+    
+7. Can i define how many pokemons can be scanned? 
+
+    sure by adding --stop-after [amount of runs]
+
+    `python ivcheck.py --stop-after 5` this results in 5 pokemons will be scanned / renamend 
+    
+ 
